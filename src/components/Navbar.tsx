@@ -9,7 +9,7 @@ import {
     NavigationMenuLink,
     NavigationMenuList,
     NavigationMenuTrigger,
-    NavigationMenuViewport,
+    navigationMenuTriggerStyle
 } from "@/components/ui/navigation-menu";
 
 import {
@@ -37,12 +37,12 @@ export default function Navbar() {
                 <NavigationMenu>
                     <NavigationMenuList>
                         <NavigationMenuItem>
-                            <NavigationMenuTrigger>
-                                <Link to={"/"}>Home</Link>
-                            </NavigationMenuTrigger>
+                            <Link to={"/"}>
+                                <NavigationMenuLink className={navigationMenuTriggerStyle()}>Home</NavigationMenuLink>
+                            </Link>
                         </NavigationMenuItem>
                         <NavigationMenuItem>
-                            <NavigationMenuTrigger>Crowds</NavigationMenuTrigger>
+                            <NavigationMenuTrigger className="text-large">Crowds</NavigationMenuTrigger>
                             <NavigationMenuContent className="w-200">
                                 <ul className="gap-2">
                                     <Card>
