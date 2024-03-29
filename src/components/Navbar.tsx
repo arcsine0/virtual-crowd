@@ -1,27 +1,20 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
+import { useTheme } from "@/components/theme-provider";
+
 import {
     NavigationMenu,
     NavigationMenuContent,
-    NavigationMenuIndicator,
     NavigationMenuItem,
     NavigationMenuLink,
     NavigationMenuList,
     NavigationMenuTrigger,
     navigationMenuTriggerStyle
 } from "@/components/ui/navigation-menu";
-
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardTitle,
-} from "@/components/ui/card";
-
-import { useTheme } from "@/components/theme-provider";
-
 import { Switch } from "@/components/ui/switch";
+
+import ListItem from "@/components/ListItem";
 
 export default function Navbar() {
     const [mode, setMode] = useState(false);
@@ -44,15 +37,12 @@ export default function Navbar() {
                         <NavigationMenuItem>
                             <NavigationMenuTrigger className="text-large">Crowds</NavigationMenuTrigger>
                             <NavigationMenuContent className="w-200">
-                                <ul className="gap-2">
-                                    <Card>
+                                <ul className="gap-2 p-2">
+                                    <li>
                                         <Link to={"/crowd/create"}>
-                                            <CardContent>
-                                                <CardTitle>Create Crowds</CardTitle>
-                                                <CardDescription>Setup and Configure your Virtual Crowds for your surveys!</CardDescription>
-                                            </CardContent>
+                                            <ListItem title="Create Crowds" desc="Setup and configure your crowds here!" />
                                         </Link>
-                                    </Card>
+                                    </li>
                                 </ul>
                             </NavigationMenuContent>
                         </NavigationMenuItem>
