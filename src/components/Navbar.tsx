@@ -36,11 +36,16 @@ export default function Navbar() {
                         </NavigationMenuItem>
                         <NavigationMenuItem>
                             <NavigationMenuTrigger className="text-large">Crowds</NavigationMenuTrigger>
-                            <NavigationMenuContent className="w-200">
+                            <NavigationMenuContent className="md:w-[200px] lg:w-[300px]">
                                 <ul className="gap-2 p-2">
                                     <li>
-                                        <Link to={"/crowd/create"}>
+                                        <Link to={"/crowds/create"}>
                                             <ListItem title="Create Crowds" desc="Setup and configure your crowds here!" />
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link to={"/crowds/all"}>
+                                            <ListItem title="View Crowds" desc="See all your created crowds!" />
                                         </Link>
                                     </li>
                                 </ul>
