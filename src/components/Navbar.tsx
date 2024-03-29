@@ -1,4 +1,4 @@
-import { Link, Outlet } from "react-router-dom"
+import { Link } from "react-router-dom"
 
 import {
     NavigationMenu,
@@ -18,12 +18,11 @@ export default function Navbar() {
                 <NavigationMenu>
                     <NavigationMenuList>
                         <NavigationMenuItem>
-                            <Link to={"/"}>Dashboard</Link>
+                            <Link to={"/"}>Test</Link>
                         </NavigationMenuItem>
                     </NavigationMenuList>
                 </NavigationMenu>
             </div>
-            <Outlet />
         </div>
     )
 }
