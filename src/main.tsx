@@ -1,14 +1,15 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
+import React from "react";
+import ReactDOM from "react-dom/client";
 
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import { ThemeProvider } from '@/components/theme-provider.tsx';
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { ThemeProvider } from "@/components/theme-provider.tsx";
 
-import Layout from '@/components/Layout';
-import Dashboard from '@/pages/Dashboard.tsx';
-import CreateCrowd from '@/pages/CreateCrowd.tsx';
+import Layout from "@/components/Layout";
+import Dashboard from "@/pages/Dashboard.tsx";
+import AllCrowds from "./pages/AllCrowds";
+import CreateCrowd from "@/pages/CreateCrowd.tsx";
 
-import './index.css';
+import "./index.css";
 
 const router = createBrowserRouter([{
 	path: "/",
@@ -19,13 +20,17 @@ const router = createBrowserRouter([{
 			element: <Dashboard />
 		},
 		{
-			path: "/crowd/create",
+			path: "/crowds/all",
+			element: <AllCrowds />
+		},
+		{
+			path: "/crowds/create",
 			element: <CreateCrowd />
 		}
 	]
 }]);
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+ReactDOM.createRoot(document.getElementById("root")!).render(
 	<ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
 		<RouterProvider router={router} />
 	</ThemeProvider>

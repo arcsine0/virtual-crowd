@@ -39,13 +39,13 @@ export default function Navbar() {
                             <NavigationMenuContent className="md:w-[200px] lg:w-[300px]">
                                 <ul className="gap-2 p-2">
                                     <li>
-                                        <Link to={"/crowds/create"}>
-                                            <ListItem title="Create Crowds" desc="Setup and configure your crowds here!" />
+                                        <Link to={"/crowds/all"}>
+                                            <ListItem title="View Crowds" desc="See all your created crowds!" />
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link to={"/crowds/all"}>
-                                            <ListItem title="View Crowds" desc="See all your created crowds!" />
+                                        <Link to={"/crowds/create"}>
+                                            <ListItem title="Create Crowds" desc="Setup and configure your crowds here!" />
                                         </Link>
                                     </li>
                                 </ul>
