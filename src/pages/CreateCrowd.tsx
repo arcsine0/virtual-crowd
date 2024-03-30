@@ -7,7 +7,7 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { AgeCard } from "@/components/BioCards";
+import { AgeCard, SexAndGenderCard } from "@/components/BioCards";
 
 export default function CreateCrowd() {
     return (
@@ -21,8 +21,8 @@ export default function CreateCrowd() {
                     </CardHeader>
                 </Card>
                 <AgeCard />
+                <SexAndGenderCard />
             </div>
-
         </div>
     )
 }
