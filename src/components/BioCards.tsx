@@ -97,12 +97,47 @@ export function AgeCard() {
 }
 
 export function SexAndGenderCard() {
+    const genders = [
+        {
+            id: "lesbian",
+            label: "Lesbian"
+        },
+        {
+            id: "gay",
+            label: "Gay"
+        },
+        {
+            id: "bisexual",
+            label: "Bisexual"
+        },
+        {
+            id: "transgender",
+            label: "Transgender"
+        },
+        {
+            id: "queer",
+            label: "Queer"
+        },
+        {
+            id: "questioning",
+            label: "Questioning"
+        },
+        {
+            id: "intersex",
+            label: "Intersex"
+        },
+        {
+            id: "asexual",
+            label: "Asexual"
+        }
+    ]
+
     const formSchema = z.object({
         sex: z.enum(["Male", "Female", "Both"], {
             required_error: "You need to select the crowd's sex",
         }),
         includeGender: z.boolean().default(false),
-        gender: z.string()
+        gender: z.array(z.string()).refine((value) => value.some((gender) => gender))
     });
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -110,7 +145,7 @@ export function SexAndGenderCard() {
         defaultValues: {
             sex: "Both",
             includeGender: false,
-            gender: "All"
+            gender: ["lesbian"]
         },
     });
 
@@ -135,9 +170,9 @@ export function SexAndGenderCard() {
                                 <FormItem>
                                     <FormLabel className="text-xl font-semibold">Sex</FormLabel>
                                     <FormControl>
-                                        <RadioGroup 
+                                        <RadioGroup
                                             className="flex flex-col gap-1"
-                                            value={field.value} 
+                                            value={field.value}
                                             onValueChange={field.onChange}
                                         >
                                             <FormItem className="flex items-center gap-2">
@@ -163,7 +198,7 @@ export function SexAndGenderCard() {
                                 </FormItem>
                             )}
                         />
-                        <FormField 
+                        <FormField
                             control={form.control}
                             name="includeGender"
                             render={({ field }) => (
@@ -171,19 +206,45 @@ export function SexAndGenderCard() {
                                     <FormLabel className="text-xl font-semibold">Gender</FormLabel>
                                     <div className="flex items-center gap-2">
                                         <FormControl>
-                                            <Checkbox 
-                                                checked={field.value} 
-                                                onCheckedChange={field.onChange} 
+                                            <Checkbox
+                                                checked={field.value}
+                                                onCheckedChange={field.onChange}
                                             />
                                         </FormControl>
-                                        <FormLabel>Include Gender?</FormLabel>
+                                        <FormLabel>Specify Gender? <span className="text-gray-400">(leave unchecked if all included)</span></FormLabel>
                                     </div>
                                 </FormItem>
                             )}
                         />
-                        {form.getValues("includeGender") === true ? 
-                            <h1>Test</h1>
-                        : <></>}
+                        {form.getValues("includeGender") === true ?
+                            <FormField
+                                control={form.control}
+                                name="gender"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        {genders.map((gender) => (
+                                            <FormItem key={gender.id}>
+                                                <div className="flex items-center gap-2">
+                                                    <FormControl>
+                                                        <Checkbox
+                                                            checked={field.value?.includes(gender.id)}
+                                                            onCheckedChange={(checked) => {
+                                                                return checked
+                                                                    ? field.onChange([...field.value, gender.id])
+                                                                    : field.onChange(
+                                                                        field.value?.filter((value) => value !== gender.id)
+                                                                    );
+                                                            }}
+                                                        />
+                                                    </FormControl>
+                                                    <FormLabel>{gender.label}</FormLabel>
+                                                </div>
+                                            </FormItem>
+                                        ))}
+                                    </FormItem>
+                                )}
+                            />
+                            : <></>}
                     </form>
                 </Form>
             </CardContent>
