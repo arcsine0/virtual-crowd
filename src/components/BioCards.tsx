@@ -1,4 +1,4 @@
-import { useState, useEffect, ChangeEvent } from "react";
+import { useState, useEffect } from "react";
 
 import {
     Card,
@@ -18,7 +18,6 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 
-import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -28,30 +27,22 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 export function AgeCard() {
-    type AgeData = {
-        v1: number;
-        v2: number;
-    }
+    const formSchema = z.object({
+        valueType: z.enum(["age", "age-range"]),
+        age: z.object({
+            single: z.number(),
+            rangeFrom: z.number(),
+            rangeTo: z.number()
+        })
+    });
 
-    const [age, setAge] = useState("");
-    const [valueType, setValueType] = useState("age");
-
-    const [ageData, setAgeData] = useState<AgeData>({ v1: 0, v2: 0 });
-
-    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const name = e.target.name;
-        const val = e.target.value;
-
-        setAgeData(prev => ({
-            ...prev,
-            [name]: val
-        }));
-    }
-
-    useEffect(() => {
-        if (valueType === "age") { setAge(ageData.v1.toString()); }
-        else { setAge(`${ageData.v1} to ${ageData.v2}`); }
-    }, [ageData, valueType])
+    const form = useForm<z.infer<typeof formSchema>>({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            valueType: "age",
+            age: { single: 18, rangeFrom: 18, rangeTo: 24 }
+        },
+    });
 
     // testing
     // useEffect(() => {
@@ -65,32 +56,84 @@ export function AgeCard() {
                 <CardDescription>Define your crowds age or age range</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-2">
-                <RadioGroup defaultValue="age" value={valueType} onValueChange={(e) => setValueType(e)}>
-                    <div className="flex items-center gap-2">
-                        <RadioGroupItem value="age" id="r1" />
-                        <Label htmlFor="r1">Age</Label>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <RadioGroupItem value="age-range" id="r2" />
-                        <Label htmlFor="r2">Age Range</Label>
-                    </div>
-                </RadioGroup>
-                {valueType === "age" ?
-                    <div className="w-full">
-                        <Label htmlFor="v1">Value</Label>
-                        <Input id="v1" name="v1" type="number" placeholder="18" value={ageData.v1} onChange={handleInputChange} />
-                    </div>
-                    :
-                    <div className="w-full">
-                        <div className="flex gap-2 items-center">
-                            <Label htmlFor="v1">From</Label>
-                            <Input id="v1" name="v1" type="number" placeholder="18" value={ageData.v1} onChange={handleInputChange} />
+                <Form {...form}>
+                    <form>
+                        <FormField
+                            control={form.control}
+                            name="valueType"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormControl>
+                                        <RadioGroup
+                                            value={field.value}
+                                            onValueChange={field.onChange}
+                                        >
+                                            <FormItem className="flex items-center gap-2">
+                                                <FormControl>
+                                                    <RadioGroupItem value="age" />
+                                                </FormControl>
+                                                <FormLabel>Age</FormLabel>
+                                            </FormItem>
+                                            <FormItem className="flex items-center gap-2">
+                                                <FormControl>
+                                                    <RadioGroupItem value="age-range" />
+                                                </FormControl>
+                                                <FormLabel>Age Range</FormLabel>
+                                            </FormItem>
+                                        </RadioGroup>
+                                    </FormControl>
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="age"
+                            render={() => (
+                                <FormItem>
+                                    <FormLabel>Value</FormLabel>
+                                    {form.getValues("valueType") === "age"
+                                        ? <FormField
+                                            control={form.control}
+                                            name="age.single"
+                                            render={({ field }) => (
+                                                <FormControl>
+                                                    <Input type="number" value={field.value} onChange={field.onChange} placeholder="18" />
+                                                </FormControl>
+                                            )}
+                                        />
+                                        : <div className="w-full flex items-center gap-2">
+                                            <FormField
+                                                control={form.control}
+                                                name="age.rangeFrom"
+                                                render={({ field }) => (
+                                                    <div className="w-full">
+                                                        <FormLabel>From</FormLabel>
+                                                        <FormControl>
+                                                            <Input type="number" value={field.value} onChange={field.onChange} placeholder="18" />
+                                                        </FormControl>
+                                                    </div>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name="age.rangeTo"
+                                                render={({ field }) => (
+                                                    <div className="w-full">
+                                                        <FormLabel>To</FormLabel>
+                                                        <FormControl>
+                                                            <Input type="number" value={field.value} onChange={field.onChange} placeholder="18" />
+                                                        </FormControl>
+                                                    </div>
+                                                )}
+                                            />
+                                        </div>
 
-                            <Label htmlFor="v2">To</Label>
-                            <Input id="v2" name="v2" type="number" placeholder="24" value={ageData.v2} onChange={handleInputChange} />
-                        </div>
-                    </div>
-                }
+                                    }
+                                </FormItem>
+                            )}
+                        />
+                    </form>
+                </Form>
             </CardContent>
         </Card>
     )
@@ -211,7 +254,7 @@ export function SexAndGenderCard() {
                                                 onCheckedChange={field.onChange}
                                             />
                                         </FormControl>
-                                        <FormLabel>Specify Gender? <span className="text-gray-400">(leave unchecked if all included)</span></FormLabel>
+                                        <FormLabel>Specify Gender? <span className="text-gray-400">(leave unchecked if all are included)</span></FormLabel>
                                     </div>
                                 </FormItem>
                             )}
