@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, FC } from "react";
 
 import {
     Card,
@@ -25,6 +25,16 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+
+export function CardLoader(props: {name: string}) {
+    const cards: { [key: string]: FC<any> } = {
+        AgeCard,
+        SexAndGenderCard,
+    }
+
+    const Card = cards[props.name];
+    return <Card />
+}
 
 export function AgeCard() {
     const formSchema = z.object({

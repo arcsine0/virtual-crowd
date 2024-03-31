@@ -34,11 +34,11 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Label } from "@radix-ui/react-label";
-import { AgeCard, SexAndGenderCard } from "@/components/BioCards";
+import { CardLoader } from "@/components/BioCards";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
-import { Check, ChevronsUpDown } from "lucide-react"
+import { Check, ChevronsUpDown } from "lucide-react";
 
 const bioTypes = [
     {
@@ -72,14 +72,19 @@ const bioTypes = [
             { value: "test", label: "Test" },
         ]
     },
-]
+];
 
 export default function CreateCrowd() {
-    const [typeOpen, setTypeOpen] = useState(false);
-    const [detailsOpen, setDetailsOpen] = useState(false);
+    const [builderData, setBuilderData] = useState([
+        { type: "age", value: "", element: "AgeCard" },
+        { type: "sex", value: "", element: "SexAndGenderCard" },
+    ]);
 
-    const [typeValue, setTypeValue] = useState("");
-    const [detailsValue, setDetailsValue] = useState("");
+    const [typeOpen, setTypeOpen] = useState<boolean>(false);
+    const [detailsOpen, setDetailsOpen] = useState<boolean>(false);
+
+    const [typeValue, setTypeValue] = useState<string>("");
+    const [detailsValue, setDetailsValue] = useState<string>("");
 
     const currentDate = `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString(undefined, {
         hour: "2-digit",
@@ -97,13 +102,14 @@ export default function CreateCrowd() {
                         <CardDescription>This is a test Crowd template</CardDescription>
                     </CardHeader>
                 </Card>
-                <AgeCard />
-                <SexAndGenderCard />
+                {builderData.map((data) => {
+                    return ( <CardLoader name={data.element} /> )
+                })}
             </div>
             <div className="order-last shrink w-full p-5 flex items-center gap-2 rounded-lg shadow-lg">
                 <p className="order-first shrinktext-normal text-gray-400">Last Saved {currentDate}</p>
                 <div className="grow"></div>
-                <div className="order-last shrink">
+                <div className="order-last shrink flex gap-2">
                     <Dialog>
                         <DialogTrigger asChild>
                             <Button variant="outline">Add Bio</Button>
