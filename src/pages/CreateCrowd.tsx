@@ -94,8 +94,8 @@ export default function CreateCrowd() {
         second: "2-digit",
     })}`;
 
-    const handleSubmittedData = (data: object) => {
-        console.log(data);
+    const handleSubmittedData = (type: string, data: string) => {
+        console.log(type, data);
     }
 
     return (
@@ -109,7 +109,7 @@ export default function CreateCrowd() {
                     </CardHeader>
                 </Card>
                 {builderData.map((data) => {
-                    return ( <CardLoader name={data.element} trigger={submitTrigger} /> )
+                    return ( <CardLoader name={data.element} trigger={submitTrigger} passData={(dt) => handleSubmittedData(data.type, dt)} /> )
                 })}
             </div>
             <div className="order-last shrink w-full p-5 flex items-center gap-2 rounded-lg shadow-lg">

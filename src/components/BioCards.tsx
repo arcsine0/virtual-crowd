@@ -27,17 +27,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-export function CardLoader(props: { name: string, trigger: number }) {
+export function CardLoader(props: { name: string, trigger: number, passData: (data: string) => void }) {
     const cards: { [key: string]: FC<any> } = {
         AgeCard,
         SexAndGenderCard,
     }
 
     const Card = cards[props.name];
-    return <Card trigger={props.trigger} />
+    return <Card trigger={props.trigger} passData={props.passData} />
 }
 
-export function AgeCard(props: { trigger: number }) {
+export function AgeCard(props: { trigger: number, passData: (data: string) => void }) {
     const formSchema = z.object({
         valueType: z.enum(["age", "age-range"]),
         age: z.object({
@@ -59,7 +59,8 @@ export function AgeCard(props: { trigger: number }) {
     const refSubmitButton = useRef<HTMLButtonElement>(null);
 
     const onSubmit = (data: z.infer<typeof formSchema>) => {
-        console.log(data);
+        if (data.valueType === "age") { props.passData(data.age.single.toString()); }
+        else { props.passData(`${data.age.rangeFrom.toString()} to ${data.age.rangeTo.toString()}`); }
     }
 
     useEffect(() => {
@@ -158,7 +159,7 @@ export function AgeCard(props: { trigger: number }) {
     )
 }
 
-export function SexAndGenderCard(props: { trigger: number }) {
+export function SexAndGenderCard(props: { trigger: number, passData: (data: string) => void }) {
     const genders = [
         { id: "lesbian", label: "Lesbian" },
         { id: "gay", label: "Gay" },
@@ -174,7 +175,7 @@ export function SexAndGenderCard(props: { trigger: number }) {
         sex: z.enum(["Male", "Female", "Both"], {
             required_error: "You need to select the crowd's sex",
         }),
-        includeGender: z.boolean().default(false),
+        specifyGender: z.boolean().default(false),
         gender: z.array(z.string()).refine((value) => value.some((gender) => gender))
     });
 
@@ -182,7 +183,7 @@ export function SexAndGenderCard(props: { trigger: number }) {
         resolver: zodResolver(formSchema),
         defaultValues: {
             sex: "Both",
-            includeGender: false,
+            specifyGender: false,
             gender: ["lesbian"]
         },
     });
@@ -191,7 +192,7 @@ export function SexAndGenderCard(props: { trigger: number }) {
     const refSubmitButton = useRef<HTMLButtonElement>(null);
 
     const onSubmit = (data: z.infer<typeof formSchema>) => {
-        console.log(data);
+        props.passData(data.sex);
     }
 
     useEffect(() => {
@@ -199,11 +200,6 @@ export function SexAndGenderCard(props: { trigger: number }) {
             refSubmitButton?.current?.click();
         }
     }, [props.trigger])
-
-    // for testing
-    // const getData = () => {
-    //     console.log(form.getValues("sex"));
-    // }
 
     return (
         <Card className="w-full">
@@ -251,7 +247,7 @@ export function SexAndGenderCard(props: { trigger: number }) {
                         />
                         <FormField
                             control={form.control}
-                            name="includeGender"
+                            name="specifyGender"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className="text-xl font-semibold">Gender</FormLabel>
@@ -267,7 +263,7 @@ export function SexAndGenderCard(props: { trigger: number }) {
                                 </FormItem>
                             )}
                         />
-                        {form.getValues("includeGender") === true ?
+                        {form.getValues("specifyGender") === true ?
                             <FormField
                                 control={form.control}
                                 name="gender"
