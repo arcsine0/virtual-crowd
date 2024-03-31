@@ -77,7 +77,8 @@ const bioTypes = [
 export default function CreateCrowd() {
     const [builderData, setBuilderData] = useState([
         { type: "age", value: "", element: "AgeCard" },
-        { type: "sex", value: "", element: "SexAndGenderCard" },
+        { type: "sex", value: "", element: "SexCard" },
+        { type: "gender", value: "", element: "GenderCard" },
     ]);
 
     const [submitTrigger, setSubmitTrigger] = useState(0);

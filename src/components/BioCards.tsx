@@ -30,7 +30,8 @@ import { z } from "zod";
 export function CardLoader(props: { name: string, trigger: number, passData: (data: string) => void }) {
     const cards: { [key: string]: FC<any> } = {
         AgeCard,
-        SexAndGenderCard,
+        SexCard,
+        GenderCard,
     }
 
     const Card = cards[props.name];
@@ -159,32 +160,17 @@ export function AgeCard(props: { trigger: number, passData: (data: string) => vo
     )
 }
 
-export function SexAndGenderCard(props: { trigger: number, passData: (data: string) => void }) {
-    const genders = [
-        { id: "lesbian", label: "Lesbian" },
-        { id: "gay", label: "Gay" },
-        { id: "bisexual", label: "Bisexual" },
-        { id: "transgender", label: "Transgender" },
-        { id: "queer", label: "Queer" },
-        { id: "questioning", label: "Questioning" },
-        { id: "intersex", label: "Intersex" },
-        { id: "asexual", label: "Asexual" }
-    ]
-
+export function SexCard(props: { trigger: number, passData: (data: string) => void }) {
     const formSchema = z.object({
         sex: z.enum(["Male", "Female", "Both"], {
             required_error: "You need to select the crowd's sex",
         }),
-        specifyGender: z.boolean().default(false),
-        gender: z.array(z.string()).refine((value) => value.some((gender) => gender))
     });
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             sex: "Both",
-            specifyGender: false,
-            gender: ["lesbian"]
         },
     });
 
@@ -204,8 +190,8 @@ export function SexAndGenderCard(props: { trigger: number, passData: (data: stri
     return (
         <Card className="w-full">
             <CardHeader>
-                <CardTitle>Sex and Gender</CardTitle>
-                <CardDescription>Define your crowds sex and/or gender</CardDescription>
+                <CardTitle>Sex</CardTitle>
+                <CardDescription>Define your crowds' sex</CardDescription>
             </CardHeader>
             <CardContent>
                 <Form {...form}>
@@ -215,7 +201,7 @@ export function SexAndGenderCard(props: { trigger: number, passData: (data: stri
                             name="sex"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="text-xl font-semibold">Sex</FormLabel>
+                                    <FormLabel className="text-large font-semibold">Options</FormLabel>
                                     <FormControl>
                                         <RadioGroup
                                             className="flex flex-col gap-1"
@@ -245,12 +231,68 @@ export function SexAndGenderCard(props: { trigger: number, passData: (data: stri
                                 </FormItem>
                             )}
                         />
+                        <Button className="hidden" ref={refSubmitButton} type="submit"></Button>
+                    </form>
+                </Form>
+            </CardContent>
+        </Card>
+    )
+}
+
+export function GenderCard(props: { trigger: number, passData: (data: string) => void }) {
+    const genders = [
+        { id: "lesbian", label: "Lesbian" },
+        { id: "gay", label: "Gay" },
+        { id: "bisexual", label: "Bisexual" },
+        { id: "transgender", label: "Transgender" },
+        { id: "queer", label: "Queer" },
+        { id: "questioning", label: "Questioning" },
+        { id: "intersex", label: "Intersex" },
+        { id: "asexual", label: "Asexual" }
+    ]
+
+    const formSchema = z.object({
+        specifyGender: z.boolean().default(false),
+        gender: z.array(z.string()).refine((value) => value.some((gender) => gender))
+    });
+
+    const form = useForm<z.infer<typeof formSchema>>({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            specifyGender: false,
+            gender: ["lesbian"]
+        },
+    });
+
+    // temporary solution to global saving
+    const refSubmitButton = useRef<HTMLButtonElement>(null);
+
+    const onSubmit = (data: z.infer<typeof formSchema>) => {
+        if (data.specifyGender === false) { props.passData("All"); }
+        else { props.passData(`${data.gender}`); }
+    }
+
+    useEffect(() => {
+        if (props.trigger) {
+            refSubmitButton?.current?.click();
+        }
+    }, [props.trigger])
+
+    return (
+        <Card className="w-full">
+            <CardHeader>
+                <CardTitle>Gender</CardTitle>
+                <CardDescription>Define your crowds' gender</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
                         <FormField
                             control={form.control}
                             name="specifyGender"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="text-xl font-semibold">Gender</FormLabel>
+                                    <FormLabel className="text-large font-semibold">Options</FormLabel>
                                     <div className="flex items-center gap-2">
                                         <FormControl>
                                             <Checkbox
