@@ -80,6 +80,8 @@ export default function CreateCrowd() {
         { type: "sex", value: "", element: "SexAndGenderCard" },
     ]);
 
+    const [submitTrigger, setSubmitTrigger] = useState(0);
+
     const [typeOpen, setTypeOpen] = useState<boolean>(false);
     const [detailsOpen, setDetailsOpen] = useState<boolean>(false);
 
@@ -92,6 +94,10 @@ export default function CreateCrowd() {
         second: "2-digit",
     })}`;
 
+    const handleSubmittedData = (data: object) => {
+        console.log(data);
+    }
+
     return (
         <div className="w-full h-full flex flex-col gap-2">
             <h1 className="order-first shrink text-3xl font-bold">Crowds Builder</h1>
@@ -103,7 +109,7 @@ export default function CreateCrowd() {
                     </CardHeader>
                 </Card>
                 {builderData.map((data) => {
-                    return ( <CardLoader name={data.element} /> )
+                    return ( <CardLoader name={data.element} trigger={submitTrigger} /> )
                 })}
             </div>
             <div className="order-last shrink w-full p-5 flex items-center gap-2 rounded-lg shadow-lg">
@@ -215,7 +221,7 @@ export default function CreateCrowd() {
                             </DialogFooter>
                         </DialogContent>
                     </Dialog>
-                    <Button>Save Bio</Button>
+                    <Button onClick={() => setSubmitTrigger((submitTrigger) => submitTrigger + 1)}>Save</Button>
                 </div>
 
             </div>

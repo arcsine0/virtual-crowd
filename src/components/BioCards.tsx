@@ -1,4 +1,4 @@
-import { useState, useEffect, FC } from "react";
+import { useState, useEffect, useRef, FC } from "react";
 
 import {
     Card,
@@ -21,22 +21,23 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-export function CardLoader(props: {name: string}) {
+export function CardLoader(props: { name: string, trigger: number }) {
     const cards: { [key: string]: FC<any> } = {
         AgeCard,
         SexAndGenderCard,
     }
 
     const Card = cards[props.name];
-    return <Card />
+    return <Card trigger={props.trigger} />
 }
 
-export function AgeCard() {
+export function AgeCard(props: { trigger: number }) {
     const formSchema = z.object({
         valueType: z.enum(["age", "age-range"]),
         age: z.object({
@@ -54,10 +55,18 @@ export function AgeCard() {
         },
     });
 
-    // testing
-    // useEffect(() => {
-    //     console.log(age);
-    // }, [age])
+    // temporary solution to global saving
+    const refSubmitButton = useRef<HTMLButtonElement>(null);
+
+    const onSubmit = (data: z.infer<typeof formSchema>) => {
+        console.log(data);
+    }
+
+    useEffect(() => {
+        if (props.trigger) {
+            refSubmitButton?.current?.click();
+        }
+    }, [props.trigger])
 
     return (
         <Card className="w-full">
@@ -67,7 +76,7 @@ export function AgeCard() {
             </CardHeader>
             <CardContent className="flex flex-col gap-2">
                 <Form {...form}>
-                    <form>
+                    <form onSubmit={form.handleSubmit(onSubmit)}>
                         <FormField
                             control={form.control}
                             name="valueType"
@@ -141,6 +150,7 @@ export function AgeCard() {
                                 </FormItem>
                             )}
                         />
+                        <Button className="hidden" ref={refSubmitButton} type="submit"></Button>
                     </form>
                 </Form>
             </CardContent>
@@ -148,7 +158,7 @@ export function AgeCard() {
     )
 }
 
-export function SexAndGenderCard() {
+export function SexAndGenderCard(props: { trigger: number }) {
     const genders = [
         { id: "lesbian", label: "Lesbian" },
         { id: "gay", label: "Gay" },
@@ -177,6 +187,19 @@ export function SexAndGenderCard() {
         },
     });
 
+    // temporary solution to global saving
+    const refSubmitButton = useRef<HTMLButtonElement>(null);
+
+    const onSubmit = (data: z.infer<typeof formSchema>) => {
+        console.log(data);
+    }
+
+    useEffect(() => {
+        if (props.trigger) {
+            refSubmitButton?.current?.click();
+        }
+    }, [props.trigger])
+
     // for testing
     // const getData = () => {
     //     console.log(form.getValues("sex"));
@@ -190,7 +213,7 @@ export function SexAndGenderCard() {
             </CardHeader>
             <CardContent>
                 <Form {...form}>
-                    <form className="flex flex-col gap-5">
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
                         <FormField
                             control={form.control}
                             name="sex"
@@ -273,6 +296,7 @@ export function SexAndGenderCard() {
                                 )}
                             />
                             : <></>}
+                        <Button className="hidden" ref={refSubmitButton} type="submit"></Button>
                     </form>
                 </Form>
             </CardContent>
