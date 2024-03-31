@@ -41,27 +41,37 @@ import { cn } from "@/lib/utils"
 import { Check, ChevronsUpDown } from "lucide-react"
 
 const bioTypes = [
-    { value: "demographics", label: "Demographics", details: [
-        { value: "age", label: "Age" },
-        { value: "sex", label: "Sex" },
-        { value: "location", label: "Location" },
-    ] },
-    { value: "education", label: "Education", details: [
-        { value: "level", label: "Level" },
-        { value: "course", label: "Course" },
-        { value: "degree", label: "Degree" },
-    ] },
-    { value: "financial", label: "Financial", details: [
-        { value: "income", label: "Income" },
-        { value: "investment", label: "Investment" },
-    ] },
-    { value: "profession", label: "Profession", details: [
-        { value: "industry", label: "Industry" },
-        { value: "position", label: "Position" },
-    ] },
-    { value: "personality", label: "Personality", details: [
-        { value: "test", label: "Test" },
-    ] },
+    {
+        value: "demographics", label: "Demographics", details: [
+            { value: "age", label: "Age" },
+            { value: "sex", label: "Sex" },
+            { value: "location", label: "Location" },
+        ]
+    },
+    {
+        value: "education", label: "Education", details: [
+            { value: "level", label: "Level" },
+            { value: "course", label: "Course" },
+            { value: "degree", label: "Degree" },
+        ]
+    },
+    {
+        value: "financial", label: "Financial", details: [
+            { value: "income", label: "Income" },
+            { value: "investment", label: "Investment" },
+        ]
+    },
+    {
+        value: "profession", label: "Profession", details: [
+            { value: "industry", label: "Industry" },
+            { value: "position", label: "Position" },
+        ]
+    },
+    {
+        value: "personality", label: "Personality", details: [
+            { value: "test", label: "Test" },
+        ]
+    },
 ]
 
 export default function CreateCrowd() {
@@ -71,10 +81,16 @@ export default function CreateCrowd() {
     const [typeValue, setTypeValue] = useState("");
     const [detailsValue, setDetailsValue] = useState("");
 
+    const currentDate = `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString(undefined, {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+    })}`;
+
     return (
         <div className="w-full h-full flex flex-col gap-2">
-            <h1 className="text-3xl font-bold">Crowds Builder</h1>
-            <div className="w-1/3 flex flex-col gap-2">
+            <h1 className="order-first shrink text-3xl font-bold">Crowds Builder</h1>
+            <div className="w-1/3 grow flex flex-col gap-2">
                 <Card>
                     <CardHeader>
                         <CardTitle>Crowd No.1</CardTitle>
@@ -84,16 +100,19 @@ export default function CreateCrowd() {
                 <AgeCard />
                 <SexAndGenderCard />
             </div>
-            <div className="w-full flex items-center gap-2">
-                <Dialog>
-                    <DialogTrigger asChild>
-                        <Button variant="outline">Add</Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle className="text-2xl">Add a Bio Card</DialogTitle>
-                            <DialogDescription>Add any bio card that would serve as extra detail for your crowd. Simply select its type first, then select the specifc sub-type you want to add</DialogDescription>
-                        </DialogHeader>
+            <div className="order-last shrink w-full p-5 flex items-center gap-2 rounded-lg shadow-lg">
+                <p className="order-first shrinktext-normal text-gray-400">Last Saved {currentDate}</p>
+                <div className="grow"></div>
+                <div className="order-last shrink">
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button variant="outline">Add Bio</Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle className="text-2xl">Add a Bio Card</DialogTitle>
+                                <DialogDescription>Add any bio card that would serve as extra detail for your crowd. Simply select its type first, then select the specifc sub-type you want to add</DialogDescription>
+                            </DialogHeader>
                             <Label className="text-large font-semibold">Type</Label>
                             <Popover open={typeOpen} onOpenChange={setTypeOpen}>
                                 <PopoverTrigger asChild>
@@ -180,16 +199,19 @@ export default function CreateCrowd() {
                                     </Command>
                                 </PopoverContent>
                             </Popover>
-                        <DialogFooter>
-                            <DialogClose asChild>
-                                <Button variant="outline">Add</Button>
-                            </DialogClose>
-                            <DialogClose asChild>
-                                <Button variant="outline">Cancel</Button>
-                            </DialogClose>
-                        </DialogFooter>
-                    </DialogContent>
-                </Dialog>
+                            <DialogFooter>
+                                <DialogClose asChild>
+                                    <Button variant="outline">Add</Button>
+                                </DialogClose>
+                                <DialogClose asChild>
+                                    <Button variant="outline">Cancel</Button>
+                                </DialogClose>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
+                    <Button>Save Bio</Button>
+                </div>
+
             </div>
         </div>
     )
