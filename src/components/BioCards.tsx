@@ -127,7 +127,6 @@ export function AgeCard() {
                                                 )}
                                             />
                                         </div>
-
                                     }
                                 </FormItem>
                             )}
@@ -141,38 +140,14 @@ export function AgeCard() {
 
 export function SexAndGenderCard() {
     const genders = [
-        {
-            id: "lesbian",
-            label: "Lesbian"
-        },
-        {
-            id: "gay",
-            label: "Gay"
-        },
-        {
-            id: "bisexual",
-            label: "Bisexual"
-        },
-        {
-            id: "transgender",
-            label: "Transgender"
-        },
-        {
-            id: "queer",
-            label: "Queer"
-        },
-        {
-            id: "questioning",
-            label: "Questioning"
-        },
-        {
-            id: "intersex",
-            label: "Intersex"
-        },
-        {
-            id: "asexual",
-            label: "Asexual"
-        }
+        { id: "lesbian", label: "Lesbian" },
+        { id: "gay", label: "Gay" },
+        { id: "bisexual", label: "Bisexual" },
+        { id: "transgender", label: "Transgender" },
+        { id: "queer", label: "Queer" },
+        { id: "questioning", label: "Questioning" },
+        { id: "intersex", label: "Intersex" },
+        { id: "asexual", label: "Asexual" }
     ]
 
     const formSchema = z.object({
