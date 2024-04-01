@@ -43,33 +43,34 @@ import { Check, ChevronsUpDown } from "lucide-react";
 const bioTypes = [
     {
         value: "demographics", label: "Demographics", details: [
-            { value: "age", label: "Age" },
-            { value: "sex", label: "Sex" },
-            { value: "location", label: "Location" },
+            { value: "age", label: "Age", element: "AgeCard" },
+            { value: "sex", label: "Sex", element: "SexCard" },
+            { value: "gender", label: "Gender", element: "GenderCard" },
+            { value: "location", label: "Location", element: "LocationCard" },
         ]
     },
     {
         value: "education", label: "Education", details: [
-            { value: "level", label: "Level" },
-            { value: "course", label: "Course" },
-            { value: "degree", label: "Degree" },
+            { value: "level", label: "Level", element: "EducationLevelCard" },
+            { value: "course", label: "Course", element: "CollegeCourseCard" },
+            { value: "degree", label: "Degree", element: "CollegeDegreeCard" },
         ]
     },
     {
         value: "financial", label: "Financial", details: [
-            { value: "income", label: "Income" },
-            { value: "investment", label: "Investment" },
+            { value: "income", label: "Income Level", element: "IncomeLevelCard" },
+            { value: "investments", label: "Investments", element: "InvestmentsCard" },
         ]
     },
     {
         value: "profession", label: "Profession", details: [
-            { value: "industry", label: "Industry" },
-            { value: "position", label: "Position" },
+            { value: "industry", label: "Industry", element: "IndustryCard" },
+            { value: "position", label: "Job Position", element: "JobPositionCard" },
         ]
     },
     {
         value: "personality", label: "Personality", details: [
-            { value: "test", label: "Test" },
+            { value: "test", label: "Test", element: "TestCard" },
         ]
     },
 ];
@@ -78,7 +79,6 @@ export default function CreateCrowd() {
     const [builderData, setBuilderData] = useState([
         { type: "age", value: "", element: "AgeCard" },
         { type: "sex", value: "", element: "SexCard" },
-        { type: "gender", value: "", element: "GenderCard" },
     ]);
 
     const [submitTrigger, setSubmitTrigger] = useState(0);
@@ -94,6 +94,23 @@ export default function CreateCrowd() {
         minute: "2-digit",
         second: "2-digit",
     })}`;
+
+    const handleAddingCards = () => {
+        const card = bioTypes.find((tp) => tp.value === typeValue)?.details.find((dt) => dt.value === detailsValue)?.element;
+        
+        if (card) {
+            if (!builderData.map((data) => data.type).includes(detailsValue)) {
+                setBuilderData((prev) => [
+                    ...prev, 
+                    {
+                        type: detailsValue,
+                        value: "",
+                        element: card
+                    }
+                ])
+            }
+        }
+    }
 
     const handleSubmittedData = (type: string, data: string) => {
         console.log(type, data);
@@ -214,7 +231,7 @@ export default function CreateCrowd() {
                             </Popover>
                             <DialogFooter>
                                 <DialogClose asChild>
-                                    <Button variant="outline">Add</Button>
+                                    <Button onClick={() => handleAddingCards()} variant="outline">Add</Button>
                                 </DialogClose>
                                 <DialogClose asChild>
                                     <Button variant="outline">Cancel</Button>
