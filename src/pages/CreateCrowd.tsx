@@ -96,18 +96,20 @@ export default function CreateCrowd() {
     })}`;
 
     const handleAddingCards = () => {
-        const card = bioTypes.find((tp) => tp.value === typeValue)?.details.find((dt) => dt.value === detailsValue)?.element;
-        
-        if (card) {
-            if (!builderData.map((data) => data.type).includes(detailsValue)) {
-                setBuilderData((prev) => [
-                    ...prev, 
-                    {
-                        type: detailsValue,
-                        value: "",
-                        element: card
-                    }
-                ])
+        if (detailsValue !== "") {
+            const card = bioTypes.find((tp) => tp.value === typeValue)?.details.find((dt) => dt.value === detailsValue)?.element;
+
+            if (card) {
+                if (!builderData.map((data) => data.type).includes(detailsValue)) {
+                    setBuilderData((prev) => [
+                        ...prev,
+                        {
+                            type: detailsValue,
+                            value: "",
+                            element: card
+                        }
+                    ])
+                }
             }
         }
     }
@@ -139,7 +141,7 @@ export default function CreateCrowd() {
                     </CardHeader>
                 </Card>
                 {builderData.map((data) => {
-                    return ( <CardLoader name={data.element} trigger={submitTrigger} passData={(dt) => handleSubmittedData(data.type, dt)} /> )
+                    return (<CardLoader name={data.element} trigger={submitTrigger} passData={(dt) => handleSubmittedData(data.type, dt)} />)
                 })}
             </div>
             <div className="order-last shrink w-full p-5 flex items-center gap-2 rounded-lg shadow-lg">
