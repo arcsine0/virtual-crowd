@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import {
     Card,
@@ -113,8 +113,20 @@ export default function CreateCrowd() {
     }
 
     const handleSubmittedData = (type: string, data: string) => {
-        console.log(type, data);
+        const temp = builderData;
+        const contextIndex = temp.findIndex((data) => data.type === type);
+
+        temp[contextIndex] = {
+            ...temp[contextIndex],
+            value: data
+        }
+
+        setBuilderData(temp);
     }
+
+    useEffect(() => {
+        console.log(builderData);
+    }, [builderData])
 
     return (
         <div className="w-full h-full flex flex-col gap-2">
