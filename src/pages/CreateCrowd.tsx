@@ -19,6 +19,16 @@ import {
 } from "@/components/ui/dialog";
 
 import {
+    Form,
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form";
+
+import {
     Command,
     CommandEmpty,
     CommandInput,
@@ -34,7 +44,11 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Label } from "@radix-ui/react-label";
-import { CardLoader } from "@/components/BioCards";
+import { builderSchema, CardLoader } from "@/components/BioCards";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useFieldArray, useForm } from "react-hook-form";
+import { z } from "zod";
 
 import { cn } from "@/lib/utils";
 
@@ -51,8 +65,7 @@ const bioTypes = [
     },
     {
         value: "education", label: "Education", details: [
-            { value: "level", label: "Level", element: "EducationLevelCard" },
-            { value: "course", label: "Course", element: "CollegeCourseCard" },
+            { value: "education", label: "Education", element: "EducationCard" },
             { value: "degree", label: "Degree", element: "CollegeDegreeCard" },
         ]
     },
@@ -89,6 +102,23 @@ export default function CreateCrowd() {
     const [typeValue, setTypeValue] = useState<string>("");
     const [detailsValue, setDetailsValue] = useState<string>("");
 
+    const builderForm = useForm<z.infer<typeof builderSchema>>({
+        resolver: zodResolver(builderSchema),
+        defaultValues: {
+            data: [
+                { type: "age", value: { 
+                    v1: "18",
+                 }, element: "AgeCard" },
+                // { type: "sex", value: {}, element: "SexCard" },
+            ]
+        }
+    });
+
+    const { fields, append, remove } = useFieldArray({
+        control: builderForm.control,
+        name: "data",
+    });
+
     const currentDate = `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString(undefined, {
         hour: "2-digit",
         minute: "2-digit",
@@ -114,6 +144,10 @@ export default function CreateCrowd() {
         }
     }
 
+    const onSubmit = (data: z.infer<typeof builderSchema>) => {
+        console.log(data.data);
+    }
+
     const handleSubmittedData = (type: string, data: string) => {
         const temp = builderData;
         const contextIndex = temp.findIndex((data) => data.type === type);
@@ -124,11 +158,14 @@ export default function CreateCrowd() {
         }
 
         setBuilderData(temp);
-    }
 
-    useEffect(() => {
-        console.log(builderData);
-    }, [builderData])
+        let bioPrompt = "";
+        temp.forEach((dt) => {
+            bioPrompt += `${dt.type}: ${dt.value}, `;
+        });
+
+        console.log(bioPrompt);
+    }
 
     return (
         <div className="w-full h-full flex flex-col gap-2">
@@ -140,9 +177,16 @@ export default function CreateCrowd() {
                         <CardDescription>This is a test Crowd template</CardDescription>
                     </CardHeader>
                 </Card>
-                {builderData.map((data) => {
-                    return (<CardLoader name={data.element} trigger={submitTrigger} passData={(dt) => handleSubmittedData(data.type, dt)} />)
-                })}
+                <Form {...builderForm}>
+                    <form onSubmit={builderForm.handleSubmit(onSubmit)}>
+                        {fields.map((field, index) => (
+                            <CardLoader key={field.id} element={field.element} index={index} control={builderForm.control} data={builderForm.getValues("data")[index].value} />
+                        ))}
+                    </form>
+                </Form>
+                {/* {builderData.map((data) => {
+                    return (<CardLoader key={data.element} name={data.element} trigger={submitTrigger} passData={(dt) => handleSubmittedData(data.type, dt)} />)
+                })} */}
             </div>
             <div className="order-last shrink w-full p-5 flex items-center gap-2 rounded-lg shadow-lg">
                 <p className="order-first shrinktext-normal text-gray-400">Last Saved {currentDate}</p>
