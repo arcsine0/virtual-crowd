@@ -43,7 +43,9 @@ import {
 } from "@/components/ui/popover";
 
 import { Button } from "@/components/ui/button";
-import { Label } from "@radix-ui/react-label";
+import { Label } from "@/components/ui/label"
+import { useToast } from "@/components/ui/use-toast"
+
 import { builderSchema, CardLoader } from "@/components/BioCards";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -102,6 +104,8 @@ export default function CreateCrowd() {
     const [typeValue, setTypeValue] = useState<string>("");
     const [detailsValue, setDetailsValue] = useState<string>("");
 
+    const { toast } = useToast();
+
     const builderForm = useForm<z.infer<typeof builderSchema>>({
         resolver: zodResolver(builderSchema),
         defaultValues: {
@@ -146,8 +150,17 @@ export default function CreateCrowd() {
                         type: detailsValue,
                         value: { v1: "" },
                         element: card
-                    })
+                    });
+                    
+                    toast({
+                        description: `Successfully added ${card}`,
+                    });
                 }
+            } else {
+                toast({
+                    description: `Error: ${card} already exists!`,
+                    variant: "destructive",
+                });
             }
         }
     }
