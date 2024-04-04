@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import {
     Card,
@@ -104,6 +104,8 @@ export default function CreateCrowd() {
     const [typeValue, setTypeValue] = useState<string>("");
     const [detailsValue, setDetailsValue] = useState<string>("");
 
+    const submitRef = useRef<HTMLButtonElement>(null);
+
     const { toast } = useToast();
 
     const builderForm = useForm<z.infer<typeof builderSchema>>({
@@ -165,6 +167,10 @@ export default function CreateCrowd() {
         }
     }
 
+    const handleDataSaving = () => {
+        submitRef.current?.click();
+    }
+
     const onSubmit = (data: z.infer<typeof builderSchema>) => {
         console.log(data.data);
     }
@@ -184,6 +190,7 @@ export default function CreateCrowd() {
                         {fields.map((field, index) => (
                             <CardLoader key={field.id} element={field.element} index={index} control={builderForm.control} data={builderForm.getValues("data")[index].value} />
                         ))}
+                        <Button className="hidden" ref={submitRef} type="submit"></Button>
                     </form>
                 </Form>
                 {/* {builderData.map((data) => {
@@ -299,7 +306,7 @@ export default function CreateCrowd() {
                             </DialogFooter>
                         </DialogContent>
                     </Dialog>
-                    <Button type="submit">Save</Button>
+                    <Button onClick={() => handleDataSaving()}>Save</Button>
                 </div>
 
             </div>
