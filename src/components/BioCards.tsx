@@ -39,8 +39,8 @@ export const builderSchema = z.object({
     data: z.array(z.object({
         type: z.string(),
         value: z.object({
-            v1: z.string(),
-            v2: z.string().optional(),
+            mainValue: z.string(),
+            subValue: z.string().optional(),
             type: z.string().optional(),
             specify: z.boolean().default(false).optional(),
         }),
@@ -84,7 +84,7 @@ export function AgeCard(props: { index: number, control: Control<z.infer<typeof 
                                 </FormControl>
                                 <SelectContent>
                                     <SelectItem value="Age">Age</SelectItem>
-                                    <SelectItem value="Age-Range">Age-Range</SelectItem>
+                                    <SelectItem value="Age-Range">Age Range</SelectItem>
                                 </SelectContent>
                             </Select>
                         </FormItem>
@@ -95,24 +95,27 @@ export function AgeCard(props: { index: number, control: Control<z.infer<typeof 
                     control={props.control}
                     render={() => (
                         <FormItem>
-                            <FormLabel>Value</FormLabel>
                             {data.type === "Age"
                                 ? <FormField
                                     control={props.control}
-                                    name={`data.${props.index}.value.v1`}
+                                    name={`data.${props.index}.value.mainValue`}
                                     render={({ field }) => (
-                                        <FormControl>
-                                            <Input type="number" {...field} placeholder="18" />
-                                        </FormControl>
+                                        <div className="w-full">
+                                            <FormLabel className="text-large font-semibold">Value</FormLabel>
+                                            <FormControl>
+                                                <Input type="number" {...field} placeholder="18" />
+                                            </FormControl>
+                                        </div>
+
                                     )}
                                 />
                                 : <div className="w-full flex items-center gap-2">
                                     <FormField
                                         control={props.control}
-                                        name={`data.${props.index}.value.v1`}
+                                        name={`data.${props.index}.value.mainValue`}
                                         render={({ field }) => (
                                             <div className="w-full">
-                                                <FormLabel>From</FormLabel>
+                                                <FormLabel className="text-large font-semibold">From</FormLabel>
                                                 <FormControl>
                                                     <Input type="number" {...field} placeholder="18" />
                                                 </FormControl>
@@ -121,10 +124,10 @@ export function AgeCard(props: { index: number, control: Control<z.infer<typeof 
                                     />
                                     <FormField
                                         control={props.control}
-                                        name={`data.${props.index}.value.v2`}
+                                        name={`data.${props.index}.value.subValue`}
                                         render={({ field }) => (
                                             <div className="w-full">
-                                                <FormLabel>To</FormLabel>
+                                                <FormLabel className="text-large font-semibold">To</FormLabel>
                                                 <FormControl>
                                                     <Input type="number" {...field} placeholder="18" />
                                                 </FormControl>
@@ -153,7 +156,7 @@ export function SexCard(props: { index: number, control: Control<z.infer<typeof 
             <CardContent>
                 <FormField
                     control={props.control}
-                    name={`data.${props.index}.value.v1`}
+                    name={`data.${props.index}.value.mainValue`}
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel className="text-large font-semibold">Options</FormLabel>

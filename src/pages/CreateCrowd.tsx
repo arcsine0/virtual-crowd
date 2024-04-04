@@ -112,7 +112,7 @@ export default function CreateCrowd() {
             data: [
                 {
                     type: "age", value: {
-                        v1: "18",
+                        mainValue: "18",
                         type: "Age"
                     }, element: "AgeCard"
                 },
@@ -148,7 +148,7 @@ export default function CreateCrowd() {
                     // ])
                     append({
                         type: detailsValue,
-                        value: { v1: "" },
+                        value: { mainValue: "" },
                         element: card
                     });
                     
