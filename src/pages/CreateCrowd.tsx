@@ -106,10 +106,12 @@ export default function CreateCrowd() {
         resolver: zodResolver(builderSchema),
         defaultValues: {
             data: [
-                { type: "age", value: { 
-                    v1: "18",
-                    type: "Age"
-                 }, element: "AgeCard" },
+                {
+                    type: "age", value: {
+                        v1: "18",
+                        type: "Age"
+                    }, element: "AgeCard"
+                },
                 // { type: "sex", value: {}, element: "SexCard" },
             ]
         }
@@ -131,15 +133,20 @@ export default function CreateCrowd() {
             const card = bioTypes.find((tp) => tp.value === typeValue)?.details.find((dt) => dt.value === detailsValue)?.element;
 
             if (card) {
-                if (!builderData.map((data) => data.type).includes(detailsValue)) {
-                    setBuilderData((prev) => [
-                        ...prev,
-                        {
-                            type: detailsValue,
-                            value: "",
-                            element: card
-                        }
-                    ])
+                if (!builderForm.getValues("data").map((data) => data.type).includes(detailsValue)) {
+                    // setBuilderData((prev) => [
+                    //     ...prev,
+                    //     {
+                    //         type: detailsValue,
+                    //         value: "",
+                    //         element: card
+                    //     }
+                    // ])
+                    append({
+                        type: detailsValue,
+                        value: { v1: "" },
+                        element: card
+                    })
                 }
             }
         }
@@ -147,25 +154,6 @@ export default function CreateCrowd() {
 
     const onSubmit = (data: z.infer<typeof builderSchema>) => {
         console.log(data.data);
-    }
-
-    const handleSubmittedData = (type: string, data: string) => {
-        const temp = builderData;
-        const contextIndex = temp.findIndex((data) => data.type === type);
-
-        temp[contextIndex] = {
-            ...temp[contextIndex],
-            value: data
-        }
-
-        setBuilderData(temp);
-
-        let bioPrompt = "";
-        temp.forEach((dt) => {
-            bioPrompt += `${dt.type}: ${dt.value}, `;
-        });
-
-        console.log(bioPrompt);
     }
 
     return (
@@ -179,7 +167,7 @@ export default function CreateCrowd() {
                     </CardHeader>
                 </Card>
                 <Form {...builderForm}>
-                    <form onSubmit={builderForm.handleSubmit(onSubmit)}>
+                    <form onSubmit={builderForm.handleSubmit(onSubmit)} className="flex flex-col gap-2">
                         {fields.map((field, index) => (
                             <CardLoader key={field.id} element={field.element} index={index} control={builderForm.control} data={builderForm.getValues("data")[index].value} />
                         ))}

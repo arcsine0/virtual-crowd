@@ -157,7 +157,7 @@ export function SexCard(props: { index: number, control: Control<z.infer<typeof 
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel className="text-large font-semibold">Options</FormLabel>
-                            <Select {...field}>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
                                 <FormControl>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select the crowd's sex" />
