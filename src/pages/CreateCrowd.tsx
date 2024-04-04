@@ -90,6 +90,14 @@ const bioTypes = [
     },
 ];
 
+const getCurrentDate = () => {
+    return `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString(undefined, {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+    })}`;
+}
+
 export default function CreateCrowd() {
     const [builderData, setBuilderData] = useState([
         { type: "age", value: "", element: "AgeCard" },
@@ -103,6 +111,8 @@ export default function CreateCrowd() {
 
     const [typeValue, setTypeValue] = useState<string>("");
     const [detailsValue, setDetailsValue] = useState<string>("");
+
+    const [savedDate, setSavedDate] = useState<string>(getCurrentDate());
 
     const submitRef = useRef<HTMLButtonElement>(null);
 
@@ -127,12 +137,6 @@ export default function CreateCrowd() {
         control: builderForm.control,
         name: "data",
     });
-
-    const currentDate = `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString(undefined, {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-    })}`;
 
     const handleAddingCards = () => {
         if (detailsValue !== "") {
@@ -169,6 +173,7 @@ export default function CreateCrowd() {
 
     const handleDataSaving = () => {
         submitRef.current?.click();
+        setSavedDate(getCurrentDate());
     }
 
     const onSubmit = (data: z.infer<typeof builderSchema>) => {
@@ -198,7 +203,7 @@ export default function CreateCrowd() {
                 })} */}
             </div>
             <div className="order-last shrink w-full p-5 flex items-center gap-2 rounded-lg shadow-lg">
-                <p className="order-first shrinktext-normal text-gray-400">Last Saved {currentDate}</p>
+                <p className="order-first shrinktext-normal text-gray-400">Last Saved {savedDate}</p>
                 <div className="grow"></div>
                 <div className="order-last shrink flex gap-2">
                     <Dialog>
