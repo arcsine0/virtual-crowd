@@ -41,7 +41,7 @@ export const builderSchema = z.object({
         value: z.object({
             v1: z.string(),
             v2: z.string().optional(),
-            type: z.enum(["o1", "o2"]).optional(),
+            type: z.string().optional(),
             specify: z.boolean().default(false).optional(),
         }),
         element: z.string(),
@@ -75,22 +75,18 @@ export function AgeCard(props: { index: number, control: Control<z.infer<typeof 
                     control={props.control}
                     render={({ field }) => (
                         <FormItem>
-                            <FormControl>
-                                <RadioGroup {...field} >
-                                    <FormItem className="flex items-center gap-2">
-                                        <FormControl>
-                                            <RadioGroupItem value="o1" />
-                                        </FormControl>
-                                        <FormLabel>Age</FormLabel>
-                                    </FormItem>
-                                    <FormItem className="flex items-center gap-2">
-                                        <FormControl>
-                                            <RadioGroupItem value="o2" />
-                                        </FormControl>
-                                        <FormLabel>Age Range</FormLabel>
-                                    </FormItem>
-                                </RadioGroup>
-                            </FormControl>
+                            <FormLabel className="text-large font-semibold">Type</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select the age type" />
+                                    </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    <SelectItem value="Age">Age</SelectItem>
+                                    <SelectItem value="Age-Range">Age-Range</SelectItem>
+                                </SelectContent>
+                            </Select>
                         </FormItem>
                     )}
                 />
@@ -100,7 +96,7 @@ export function AgeCard(props: { index: number, control: Control<z.infer<typeof 
                     render={() => (
                         <FormItem>
                             <FormLabel>Value</FormLabel>
-                            {data.type === "o1"
+                            {data.type === "Age"
                                 ? <FormField
                                     control={props.control}
                                     name={`data.${props.index}.value.v1`}
@@ -161,20 +157,18 @@ export function SexCard(props: { index: number, control: Control<z.infer<typeof 
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel className="text-large font-semibold">Options</FormLabel>
-                            <FormControl>
-                                <Select {...field}>
-                                    <FormControl>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Select the crowd's sex" />
-                                        </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                        <SelectItem value="Male">Male</SelectItem>
-                                        <SelectItem value="Female">Female</SelectItem>
-                                        <SelectItem value="Both">Both</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </FormControl>
+                            <Select {...field}>
+                                <FormControl>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select the crowd's sex" />
+                                    </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    <SelectItem value="Male">Male</SelectItem>
+                                    <SelectItem value="Female">Female</SelectItem>
+                                    <SelectItem value="Both">Both</SelectItem>
+                                </SelectContent>
+                            </Select>
                         </FormItem>
                     )}
                 />

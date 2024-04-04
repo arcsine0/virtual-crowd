@@ -108,6 +108,7 @@ export default function CreateCrowd() {
             data: [
                 { type: "age", value: { 
                     v1: "18",
+                    type: "Age"
                  }, element: "AgeCard" },
                 // { type: "sex", value: {}, element: "SexCard" },
             ]
@@ -297,7 +298,7 @@ export default function CreateCrowd() {
                             </DialogFooter>
                         </DialogContent>
                     </Dialog>
-                    <Button onClick={() => setSubmitTrigger((submitTrigger) => submitTrigger + 1)}>Save</Button>
+                    <Button type="submit">Save</Button>
                 </div>
 
             </div>
