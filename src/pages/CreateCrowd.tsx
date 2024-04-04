@@ -20,12 +20,6 @@ import {
 
 import {
     Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
 } from "@/components/ui/form";
 
 import {
@@ -43,7 +37,8 @@ import {
 } from "@/components/ui/popover";
 
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label"
+import { Label } from "@/components/ui/label";
+import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast"
 
 import { builderSchema, CardLoader } from "@/components/BioCards";
@@ -159,13 +154,15 @@ export default function CreateCrowd() {
                     });
                     
                     toast({
-                        description: `Successfully added ${card}`,
+                        title: `Successfully added ${card}`,
+                        duration: 1000,
                     });
                 }
             } else {
                 toast({
-                    description: `Error: ${card} already exists!`,
+                    title: `Error: ${card} already exists!`,
                     variant: "destructive",
+                    duration: 1000,
                 });
             }
         }
@@ -178,6 +175,10 @@ export default function CreateCrowd() {
 
     const onSubmit = (data: z.infer<typeof builderSchema>) => {
         console.log(data.data);
+        toast({
+            title: "Data saved successfully",
+            duration: 1000,
+        });
     }
 
     return (
@@ -198,9 +199,7 @@ export default function CreateCrowd() {
                         <Button className="hidden" ref={submitRef} type="submit"></Button>
                     </form>
                 </Form>
-                {/* {builderData.map((data) => {
-                    return (<CardLoader key={data.element} name={data.element} trigger={submitTrigger} passData={(dt) => handleSubmittedData(data.type, dt)} />)
-                })} */}
+                <Toaster />
             </div>
             <div className="order-last shrink w-full p-5 flex items-center gap-2 rounded-lg shadow-lg">
                 <p className="order-first shrinktext-normal text-gray-400">Last Saved {savedDate}</p>
