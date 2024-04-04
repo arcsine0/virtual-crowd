@@ -18,6 +18,14 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -137,32 +145,8 @@ export function AgeCard(props: { index: number, control: Control<z.infer<typeof 
     )
 }
 
-export function SexCard(props: { trigger: number, passData: (data: string) => void }) {
-    const formSchema = z.object({
-        sex: z.enum(["Male", "Female", "Both"], {
-            required_error: "You need to select the crowd's sex",
-        }),
-    });
-
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
-        defaultValues: {
-            sex: "Both",
-        },
-    });
-
-    // temporary solution to global saving
-    const refSubmitButton = useRef<HTMLButtonElement>(null);
-
-    const onSubmit = (data: z.infer<typeof formSchema>) => {
-        props.passData(data.sex);
-    }
-
-    useEffect(() => {
-        if (props.trigger) {
-            refSubmitButton?.current?.click();
-        }
-    }, [props.trigger])
+export function SexCard(props: { index: number, control: Control<z.infer<typeof builderSchema>>, data: object }) {
+    const data = JSON.parse(JSON.stringify(props.data));
 
     return (
         <Card className="w-full">
@@ -171,46 +155,29 @@ export function SexCard(props: { trigger: number, passData: (data: string) => vo
                 <CardDescription>Define your crowds' sex</CardDescription>
             </CardHeader>
             <CardContent>
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
-                        <FormField
-                            control={form.control}
-                            name="sex"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel className="text-large font-semibold">Options</FormLabel>
+                <FormField
+                    control={props.control}
+                    name={`data.${props.index}.value.v1`}
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel className="text-large font-semibold">Options</FormLabel>
+                            <FormControl>
+                                <Select {...field}>
                                     <FormControl>
-                                        <RadioGroup
-                                            className="flex flex-col gap-1"
-                                            value={field.value}
-                                            onValueChange={field.onChange}
-                                        >
-                                            <FormItem className="flex items-center gap-2">
-                                                <FormControl>
-                                                    <RadioGroupItem value="Male" />
-                                                </FormControl>
-                                                <FormLabel className="font-normal">Male</FormLabel>
-                                            </FormItem>
-                                            <FormItem className="flex items-center gap-2">
-                                                <FormControl>
-                                                    <RadioGroupItem value="Female" />
-                                                </FormControl>
-                                                <FormLabel className="font-normal">Female</FormLabel>
-                                            </FormItem>
-                                            <FormItem className="flex items-center gap-2">
-                                                <FormControl>
-                                                    <RadioGroupItem value="Both" />
-                                                </FormControl>
-                                                <FormLabel className="font-normal">Both</FormLabel>
-                                            </FormItem>
-                                        </RadioGroup>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select the crowd's sex" />
+                                        </SelectTrigger>
                                     </FormControl>
-                                </FormItem>
-                            )}
-                        />
-                        <Button className="hidden" ref={refSubmitButton} type="submit"></Button>
-                    </form>
-                </Form>
+                                    <SelectContent>
+                                        <SelectItem value="Male">Male</SelectItem>
+                                        <SelectItem value="Female">Female</SelectItem>
+                                        <SelectItem value="Both">Both</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </FormControl>
+                        </FormItem>
+                    )}
+                />
             </CardContent>
         </Card>
     )
