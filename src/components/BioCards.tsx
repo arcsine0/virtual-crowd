@@ -41,6 +41,7 @@ export const builderSchema = z.object({
         value: z.object({
             mainValue: z.string(),
             subValue: z.string().optional(),
+            groupValue: z.array(z.string()),
             type: z.string().optional(),
             specify: z.boolean().default(false).optional(),
         }),
@@ -145,8 +146,6 @@ export function AgeCard(props: { index: number, control: Control<z.infer<typeof 
 }
 
 export function SexCard(props: { index: number, control: Control<z.infer<typeof builderSchema>>, data: object }) {
-    const data = JSON.parse(JSON.stringify(props.data));
-
     return (
         <Card className="w-full">
             <CardHeader>
@@ -180,7 +179,9 @@ export function SexCard(props: { index: number, control: Control<z.infer<typeof 
     )
 }
 
-export function GenderCard(props: { trigger: number, passData: (data: string) => void }) {
+export function GenderCard(props: { index: number, control: Control<z.infer<typeof builderSchema>>, data: object }) {
+    const data = JSON.parse(JSON.stringify(props.data));
+
     const genders = [
         { id: "lesbian", label: "Lesbian" },
         { id: "gay", label: "Gay" },
@@ -190,33 +191,7 @@ export function GenderCard(props: { trigger: number, passData: (data: string) =>
         { id: "questioning", label: "Questioning" },
         { id: "intersex", label: "Intersex" },
         { id: "asexual", label: "Asexual" }
-    ]
-
-    const formSchema = z.object({
-        specifyGender: z.boolean().default(false),
-        gender: z.array(z.string()).refine((value) => value.some((gender) => gender))
-    });
-
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
-        defaultValues: {
-            specifyGender: false,
-            gender: ["lesbian"]
-        },
-    });
-
-    // temporary solution to global saving
-    const refSubmitButton = useRef<HTMLButtonElement>(null);
-
-    const onSubmit = (data: z.infer<typeof formSchema>) => {
-        props.passData(data.specifyGender === false ? "All" : `${data.gender}`);
-    }
-
-    useEffect(() => {
-        if (props.trigger) {
-            refSubmitButton?.current?.click();
-        }
-    }, [props.trigger])
+    ];
 
     return (
         <Card className="w-full">
@@ -224,59 +199,54 @@ export function GenderCard(props: { trigger: number, passData: (data: string) =>
                 <CardTitle>Gender</CardTitle>
                 <CardDescription>Define your crowds' gender</CardDescription>
             </CardHeader>
-            <CardContent>
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
-                        <FormField
-                            control={form.control}
-                            name="specifyGender"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel className="text-large font-semibold">Options</FormLabel>
-                                    <div className="flex items-center gap-2">
-                                        <FormControl>
-                                            <Checkbox
-                                                checked={field.value}
-                                                onCheckedChange={field.onChange}
-                                            />
-                                        </FormControl>
-                                        <FormLabel>Specify Gender? <span className="text-gray-400">(leave unchecked if all are included)</span></FormLabel>
-                                    </div>
-                                </FormItem>
-                            )}
-                        />
-                        {form.getValues("specifyGender") === true ?
-                            <FormField
-                                control={form.control}
-                                name="gender"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        {genders.map((gender) => (
-                                            <FormItem key={gender.id}>
-                                                <div className="flex items-center gap-2">
-                                                    <FormControl>
-                                                        <Checkbox
-                                                            checked={field.value?.includes(gender.id)}
-                                                            onCheckedChange={(checked) => {
-                                                                return checked
-                                                                    ? field.onChange([...field.value, gender.id])
-                                                                    : field.onChange(
-                                                                        field.value?.filter((value) => value !== gender.id)
-                                                                    );
-                                                            }}
-                                                        />
-                                                    </FormControl>
-                                                    <FormLabel>{gender.label}</FormLabel>
-                                                </div>
-                                            </FormItem>
-                                        ))}
+            <CardContent className="flex flex-col gap-2">
+                <FormField
+                    control={props.control}
+                    name={`data.${props.index}.value.specify`}
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel className="text-large font-semibold">Options</FormLabel>
+                            <div className="flex items-center gap-2">
+                                <FormControl>
+                                    <Checkbox
+                                        checked={field.value}
+                                        onCheckedChange={field.onChange}
+                                    />
+                                </FormControl>
+                                <FormLabel>Specify Gender? <span className="text-gray-400">(leave unchecked if all are included)</span></FormLabel>
+                            </div>
+                        </FormItem>
+                    )}
+                />
+                {data.specify === true ?
+                    <FormField
+                        control={props.control}
+                        name={`data.${props.index}.value.groupValue`}
+                        render={({ field }) => (
+                            <FormItem>
+                                {genders.map((gender) => (
+                                    <FormItem key={gender.id}>
+                                        <div className="flex items-center gap-2">
+                                            <FormControl>
+                                                <Checkbox
+                                                    checked={field.value?.includes(gender.id)}
+                                                    onCheckedChange={(checked) => {
+                                                        return checked
+                                                            ? field.onChange([...field.value, gender.id])
+                                                            : field.onChange(
+                                                                field.value?.filter((value) => value !== gender.id)
+                                                            );
+                                                    }}
+                                                />
+                                            </FormControl>
+                                            <FormLabel>{gender.label}</FormLabel>
+                                        </div>
                                     </FormItem>
-                                )}
-                            />
-                            : <></>}
-                        <Button className="hidden" ref={refSubmitButton} type="submit"></Button>
-                    </form>
-                </Form>
+                                ))}
+                            </FormItem>
+                        )}
+                    />
+                    : <></>}
             </CardContent>
         </Card>
     )

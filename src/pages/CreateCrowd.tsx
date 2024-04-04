@@ -120,6 +120,7 @@ export default function CreateCrowd() {
                 {
                     type: "age", value: {
                         mainValue: "18",
+                        groupValue: [""],
                         type: "Age"
                     }, element: "AgeCard"
                 },
@@ -139,17 +140,9 @@ export default function CreateCrowd() {
 
             if (card) {
                 if (!builderForm.getValues("data").map((data) => data.type).includes(detailsValue)) {
-                    // setBuilderData((prev) => [
-                    //     ...prev,
-                    //     {
-                    //         type: detailsValue,
-                    //         value: "",
-                    //         element: card
-                    //     }
-                    // ])
                     append({
                         type: detailsValue,
-                        value: { mainValue: "" },
+                        value: { mainValue: "", groupValue: [""] },
                         element: card
                     });
                     
