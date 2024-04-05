@@ -23,6 +23,14 @@ import {
 } from "@/components/ui/form";
 
 import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+
+import {
     Command,
     CommandEmpty,
     CommandInput,
@@ -101,11 +109,6 @@ export default function CreateCrowd() {
         { type: "sex", value: "", element: "SexCard" },
     ]);
 
-    const [submitTrigger, setSubmitTrigger] = useState(0);
-
-    const [typeOpen, setTypeOpen] = useState<boolean>(false);
-    const [detailsOpen, setDetailsOpen] = useState<boolean>(false);
-
     const [typeValue, setTypeValue] = useState<string>("");
     const [detailsValue, setDetailsValue] = useState<string>("");
 
@@ -145,7 +148,7 @@ export default function CreateCrowd() {
                         value: { mainValue: "", groupValue: [""] },
                         element: card
                     });
-                    
+
                     toast({
                         title: `Successfully added ${card}`,
                         duration: 1000,
@@ -226,91 +229,33 @@ export default function CreateCrowd() {
                                 <DialogDescription>Add any bio card that would serve as extra detail for your crowd. Simply select its type first, then select the specifc sub-type you want to add</DialogDescription>
                             </DialogHeader>
                             <Label className="text-large font-semibold">Type</Label>
-                            <Popover open={typeOpen} onOpenChange={setTypeOpen}>
-                                <PopoverTrigger asChild>
-                                    <Button
-                                        variant="outline"
-                                        role="combobox"
-                                        aria-expanded={typeOpen}
-                                        className="justify-between"
-                                    >
-                                        {typeValue
-                                            ? bioTypes.find((bio) => bio.value === typeValue)?.label
-                                            : "Select bio type..."
-                                        }
-                                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                    </Button>
-                                </PopoverTrigger>
-                                <PopoverContent className="p-0">
-                                    <Command>
-                                        <CommandInput placeholder="Search bio type..." />
-                                        <CommandEmpty>No Bio Type found.</CommandEmpty>
-                                        <CommandList>
-                                            {bioTypes.map((bio) => (
-                                                <CommandItem
-                                                    key={bio.value}
-                                                    value={bio.value}
-                                                    onSelect={(val) => {
-                                                        setTypeValue(val === typeValue ? "" : val);
-                                                        setTypeOpen(false);
-                                                    }}
-                                                >
-                                                    <Check
-                                                        className={cn(
-                                                            "mr-2 h-4 w-4",
-                                                            typeValue === bio.value ? "opacity-100" : "opacity-0"
-                                                        )}
-                                                    />
-                                                    {bio.label}
-                                                </CommandItem>
-                                            ))}
-                                        </CommandList>
-                                    </Command>
-                                </PopoverContent>
-                            </Popover>
-                            <Label className="text-large font-semibold">Specifics</Label>
-                            <Popover open={detailsOpen} onOpenChange={setDetailsOpen}>
-                                <PopoverTrigger asChild>
-                                    <Button
-                                        variant="outline"
-                                        role="combobox"
-                                        aria-expanded={detailsOpen}
-                                        className="justify-between"
-                                    >
-                                        {detailsValue
-                                            ? bioTypes.find((bio) => bio.value === typeValue)?.details.find((dt) => dt.value === detailsValue)?.label
-                                            : "Select details type..."
-                                        }
-                                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                    </Button>
-                                </PopoverTrigger>
-                                <PopoverContent className="p-0">
-                                    <Command>
-                                        <CommandInput placeholder="Search details type..." />
-                                        <CommandEmpty>No Details Type found.</CommandEmpty>
-                                        <CommandList>
-                                            {bioTypes.find((bio) => bio.value === typeValue)?.details.map((dt) => (
-                                                <CommandItem
-                                                    key={dt.value}
-                                                    value={dt.value}
-                                                    onSelect={(val) => {
-                                                        setDetailsValue(val === detailsValue ? "" : val);
-                                                        setDetailsOpen(false);
-                                                    }}
-                                                >
-                                                    <Check
-                                                        className={cn(
-                                                            "mr-2 h-4 w-4",
-                                                            detailsValue === dt.value ? "opacity-100" : "opacity-0"
-                                                        )}
-                                                    />
-                                                    {dt.label}
-                                                </CommandItem>
-                                            ))}
-                                        </CommandList>
-                                    </Command>
-                                </PopoverContent>
-                            </Popover>
+                            <Select
+                                onValueChange={setTypeValue}
+                                defaultValue={typeValue}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select card type..." />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {bioTypes.map((bio) => (
+                                        <SelectItem value={bio.value}>{bio.label}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <Label className="text-large font-semibold">Sub-Type</Label>
+                            <Select
+                                onValueChange={setDetailsValue}
+                                defaultValue={detailsValue}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select card sub-type..." />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {bioTypes.find((bio) => bio.value === typeValue)?.details.map((dt) => (
+                                        <SelectItem value={dt.value}>{dt.label}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                             <DialogFooter>
                                 <DialogClose asChild>
                                     <Button onClick={() => handleAddingCards()} variant="outline">Add</Button>
