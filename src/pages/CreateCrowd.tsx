@@ -39,6 +39,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Toaster } from "@/components/ui/toaster";
+import { ScrollArea } from "@/components/ui/scroll-area"
+
 import { useToast } from "@/components/ui/use-toast"
 
 import { builderSchema, CardLoader } from "@/components/BioCards";
@@ -119,9 +121,7 @@ export default function CreateCrowd() {
             data: [
                 {
                     type: "age", value: {
-                        mainValue: "18",
                         groupValue: [""],
-                        type: "Age"
                     }, element: "AgeCard"
                 },
                 // { type: "sex", value: {}, element: "SexCard" },
@@ -168,6 +168,24 @@ export default function CreateCrowd() {
 
     const onSubmit = (data: z.infer<typeof builderSchema>) => {
         console.log(data.data);
+
+        // const prompt = data.data.map((field) => {
+        //     let fieldPrompt = "";
+        //     switch(field.type) {
+        //         case "age":
+
+        //             break;
+        //         case "sex":
+        //             break;
+        //         case "gender":
+        //             break;
+        //         case "education":
+        //             break;
+        //         default:
+        //             break;
+        //     }
+        // });
+
         toast({
             title: "Data saved successfully",
             duration: 1000,
@@ -177,8 +195,8 @@ export default function CreateCrowd() {
     return (
         <div className="w-full h-full flex flex-col gap-2">
             <h1 className="order-first shrink text-3xl font-bold">Crowds Builder</h1>
-            <div className="w-1/3 grow flex flex-col gap-2">
-                <Card>
+            <div className="w-full grow flex flex-col gap-2">
+                <Card className="w-1/3">
                     <CardHeader>
                         <CardTitle>Crowd No.1</CardTitle>
                         <CardDescription>This is a test Crowd template</CardDescription>

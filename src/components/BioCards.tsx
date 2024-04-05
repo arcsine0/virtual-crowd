@@ -36,11 +36,11 @@ export const builderSchema = z.object({
     data: z.array(z.object({
         type: z.string(),
         value: z.object({
-            mainValue: z.string(),
+            mainValue: z.string().optional(),
             subValue: z.string().optional(),
             rangeFromValue: z.string().optional(),
             rangeToValue: z.string().optional(),
-            groupValue: z.array(z.string()),
+            groupValue: z.array(z.string()).optional(),
             type: z.string().optional(),
             specify: z.boolean().default(false).optional(),
         }),
@@ -64,7 +64,7 @@ export function AgeCard(props: { index: number, control: Control<z.infer<typeof 
     const data = JSON.parse(JSON.stringify(props.data));
 
     return (
-        <Card className="w-full">
+        <Card className="w-1/3">
             <CardHeader>
                 <CardTitle>Age</CardTitle>
                 <CardDescription>Define your crowds age or age range</CardDescription>
@@ -146,7 +146,7 @@ export function AgeCard(props: { index: number, control: Control<z.infer<typeof 
 
 export function SexCard(props: { index: number, control: Control<z.infer<typeof builderSchema>>, data: object }) {
     return (
-        <Card className="w-full">
+        <Card className="w-1/3">
             <CardHeader>
                 <CardTitle>Sex</CardTitle>
                 <CardDescription>Define your crowds' sex</CardDescription>
@@ -193,7 +193,7 @@ export function GenderCard(props: { index: number, control: Control<z.infer<type
     ];
 
     return (
-        <Card className="w-full">
+        <Card className="w-1/3">
             <CardHeader>
                 <CardTitle>Gender</CardTitle>
                 <CardDescription>Define your crowds' gender</CardDescription>
@@ -230,11 +230,14 @@ export function GenderCard(props: { index: number, control: Control<z.infer<type
                                                 <Checkbox
                                                     checked={field.value?.includes(gender.id)}
                                                     onCheckedChange={(checked) => {
-                                                        return checked
-                                                            ? field.onChange([...field.value, gender.id])
-                                                            : field.onChange(
-                                                                field.value?.filter((value) => value !== gender.id)
-                                                            );
+                                                        let newValue = [...(field.value ?? [])];
+                                                        if (checked) {
+                                                            newValue.push(gender.id);
+                                                        } else {
+                                                            newValue = newValue.filter((value) => value !== gender.id);
+                                                        }
+                                                        newValue = newValue.filter(val => val !== "");
+                                                        field.onChange(newValue);
                                                     }}
                                                 />
                                             </FormControl>
@@ -255,7 +258,7 @@ export function EducationCard(props: { index: number, control: Control<z.infer<t
     const data = JSON.parse(JSON.stringify(props.data));
 
     return (
-        <Card className="w-full">
+        <Card className="w-1/3">
             <CardHeader>
                 <CardTitle>Education</CardTitle>
                 <CardDescription>Define your crowds' education details</CardDescription>
