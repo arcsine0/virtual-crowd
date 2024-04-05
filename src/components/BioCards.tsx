@@ -36,10 +36,10 @@ export const builderSchema = z.object({
     data: z.array(z.object({
         type: z.string(),
         value: z.object({
-            mainValue: z.string().optional(),
-            subValue: z.string().optional(),
-            rangeFromValue: z.string().optional(),
-            rangeToValue: z.string().optional(),
+            mainValue: z.string().min(1, { message: "Value required" }).optional().or(z.literal("")),
+            subValue: z.string().min(1, { message: "Value required" }).optional(),
+            rangeFromValue: z.string().min(1, { message: "Value required" }).optional(),
+            rangeToValue: z.string().min(1, { message: "Value required" }).optional(),
             groupValue: z.array(z.string()).optional(),
             type: z.string().optional(),
             specify: z.boolean().default(false).optional(),
@@ -76,7 +76,10 @@ export function AgeCard(props: { index: number, control: Control<z.infer<typeof 
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel className="text-large font-semibold">Type</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <Select
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                            >
                                 <FormControl>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select the age type" />
@@ -103,7 +106,12 @@ export function AgeCard(props: { index: number, control: Control<z.infer<typeof 
                                         <div className="w-full">
                                             <FormLabel className="text-large font-semibold">Value</FormLabel>
                                             <FormControl>
-                                                <Input type="number" {...field} placeholder="18" />
+                                                <Input
+                                                    type="number"
+                                                    required={true}
+                                                    {...field}
+                                                    placeholder="18"
+                                                />
                                             </FormControl>
                                         </div>
 
@@ -117,7 +125,12 @@ export function AgeCard(props: { index: number, control: Control<z.infer<typeof 
                                             <div className="w-full">
                                                 <FormLabel className="text-large font-semibold">From</FormLabel>
                                                 <FormControl>
-                                                    <Input type="number" {...field} placeholder="18" />
+                                                    <Input
+                                                        type="number"
+                                                        required={true}
+                                                        {...field}
+                                                        placeholder="18"
+                                                    />
                                                 </FormControl>
                                             </div>
                                         )}
@@ -129,13 +142,19 @@ export function AgeCard(props: { index: number, control: Control<z.infer<typeof 
                                             <div className="w-full">
                                                 <FormLabel className="text-large font-semibold">To</FormLabel>
                                                 <FormControl>
-                                                    <Input type="number" {...field} placeholder="18" />
+                                                    <Input
+                                                        type="number"
+                                                        required={true}
+                                                        {...field}
+                                                        placeholder="18"
+                                                    />
                                                 </FormControl>
                                             </div>
                                         )}
                                     />
                                 </div>
                             }
+                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -158,7 +177,10 @@ export function SexCard(props: { index: number, control: Control<z.infer<typeof 
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel className="text-large font-semibold">Options</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <Select
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                            >
                                 <FormControl>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select the crowd's sex" />
@@ -273,6 +295,7 @@ export function EducationCard(props: { index: number, control: Control<z.infer<t
                             <FormControl>
                                 <Input
                                     type="text"
+                                    required={true}
                                     value={field.value}
                                     onChange={field.onChange}
                                     placeholder="Enter course names, comma separated if multiple"
@@ -290,6 +313,7 @@ export function EducationCard(props: { index: number, control: Control<z.infer<t
                             <FormControl>
                                 <Input
                                     type="number"
+                                    required={true}
                                     value={field.value}
                                     onChange={field.onChange}
                                     placeholder="Enter average amount of years to complete the courses"
@@ -324,7 +348,13 @@ export function EducationCard(props: { index: number, control: Control<z.infer<t
                                 <div className="w-full">
                                     <FormLabel>From</FormLabel>
                                     <FormControl>
-                                        <Input type="number" value={field.value} onChange={field.onChange} placeholder="1" />
+                                        <Input
+                                            type="number"
+                                            required={true}
+                                            value={field.value}
+                                            onChange={field.onChange}
+                                            placeholder="1"
+                                        />
                                     </FormControl>
                                 </div>
                             )}
@@ -336,7 +366,13 @@ export function EducationCard(props: { index: number, control: Control<z.infer<t
                                 <div className="w-full">
                                     <FormLabel>To</FormLabel>
                                     <FormControl>
-                                        <Input type="number" value={field.value} onChange={field.onChange} placeholder="4" />
+                                        <Input
+                                            type="number"
+                                            required={true}
+                                            value={field.value}
+                                            onChange={field.onChange}
+                                            placeholder="4"
+                                        />
                                     </FormControl>
                                 </div>
                             )}
