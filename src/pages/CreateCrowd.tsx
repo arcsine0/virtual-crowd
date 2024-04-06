@@ -159,8 +159,8 @@ export default function CreateCrowd() {
     const onSubmit = (data: z.infer<typeof builderSchema>) => {
         console.log(data.data);
 
-        // temporary prompt solver
-        const prompt = data.data.map((field) => {
+        // temporary prompt builder
+        const prompts = data.data.map((field) => {
             let fieldPrompt = `${field.type?.toUpperCase()}: `;
             switch(field.type) {
                 case "age":
@@ -173,7 +173,7 @@ export default function CreateCrowd() {
                     fieldPrompt += `${field.value.specify === (false || undefined) ? "All" : `${field.value.groupValue}`}`;
                     break;
                 case "education":
-                    fieldPrompt += `Course: ${field.value.mainValue}, Total Years: ${field.value.subValue}, Included Years: ${field.value.specify === (false || undefined) ? "All" : (`${field.value.rangeFromValue} to ${field.value.rangeToValue}`)}`;
+                    fieldPrompt += `COURSE: ${field.value.mainValue}, TOTAL YEARS: ${field.value.subValue}, INCLUDED YEARS: ${field.value.specify === (false || undefined) ? "All" : (`${field.value.rangeFromValue} to ${field.value.rangeToValue}`)}`;
                     break;
                 default:
                     break;
@@ -181,6 +181,7 @@ export default function CreateCrowd() {
             return fieldPrompt;
         });
 
+        const prompt = `This is your details as an individuals:\n ${prompts.join("\n")}\n`;
         console.log(prompt);
 
         toast({
