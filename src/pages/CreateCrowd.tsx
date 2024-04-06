@@ -152,29 +152,36 @@ export default function CreateCrowd() {
 
     const handleRemoveCard = (index: number) => {
         // remove(index);
-        console.log(index)
+        // console.log(index)
         
     }
 
     const onSubmit = (data: z.infer<typeof builderSchema>) => {
         console.log(data.data);
 
-        // const prompt = data.data.map((field) => {
-        //     let fieldPrompt = "";
-        //     switch(field.type) {
-        //         case "age":
+        // temporary prompt solver
+        const prompt = data.data.map((field) => {
+            let fieldPrompt = `${field.type?.toUpperCase()}: `;
+            switch(field.type) {
+                case "age":
+                    fieldPrompt += `${field.value.type === "Age" ? field.value.mainValue : (`${field.value.rangeFromValue} to ${field.value.rangeToValue}`)}`;
+                    break;
+                case "sex":
+                    fieldPrompt += `${field.value.mainValue}`;
+                    break;
+                case "gender":
+                    fieldPrompt += `${field.value.specify === (false || undefined) ? "All" : `${field.value.groupValue}`}`;
+                    break;
+                case "education":
+                    fieldPrompt += `Course: ${field.value.mainValue}, Total Years: ${field.value.subValue}, Included Years: ${field.value.specify === (false || undefined) ? "All" : (`${field.value.rangeFromValue} to ${field.value.rangeToValue}`)}`;
+                    break;
+                default:
+                    break;
+            }
+            return fieldPrompt;
+        });
 
-        //             break;
-        //         case "sex":
-        //             break;
-        //         case "gender":
-        //             break;
-        //         case "education":
-        //             break;
-        //         default:
-        //             break;
-        //     }
-        // });
+        console.log(prompt);
 
         toast({
             title: "Data saved successfully",
