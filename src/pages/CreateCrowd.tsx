@@ -30,24 +30,9 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 
-import {
-    Command,
-    CommandEmpty,
-    CommandInput,
-    CommandItem,
-    CommandList,
-} from "@/components/ui/command";
-
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
-
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Toaster } from "@/components/ui/toaster";
-import { ScrollArea } from "@/components/ui/scroll-area"
 
 import { useToast } from "@/components/ui/use-toast"
 
@@ -56,10 +41,6 @@ import { builderSchema, CardLoader } from "@/components/BioCards";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
-
-import { cn } from "@/lib/utils";
-
-import { Check, ChevronsUpDown } from "lucide-react";
 
 const bioTypes = [
     {
@@ -169,6 +150,12 @@ export default function CreateCrowd() {
         setSavedDate(getCurrentDate());
     }
 
+    const handleRemoveCard = (index: number) => {
+        // remove(index);
+        console.log(index)
+        
+    }
+
     const onSubmit = (data: z.infer<typeof builderSchema>) => {
         console.log(data.data);
 
@@ -208,7 +195,14 @@ export default function CreateCrowd() {
                 <Form {...builderForm}>
                     <form onSubmit={builderForm.handleSubmit(onSubmit)} className="flex flex-col gap-2">
                         {fields.map((field, index) => (
-                            <CardLoader key={field.id} element={field.element} index={index} control={builderForm.control} data={builderForm.getValues("data")[index].value} />
+                            <CardLoader 
+                                key={field.id} 
+                                element={field.element} 
+                                index={index} 
+                                control={builderForm.control} 
+                                data={builderForm.getValues("data")[index].value} 
+                                remove={handleRemoveCard(index)} 
+                            />
                         ))}
                         <Button className="hidden" ref={submitRef} type="submit"></Button>
                     </form>

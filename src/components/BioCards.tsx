@@ -27,10 +27,11 @@ import {
 
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Button } from "@/components/ui/button";
 
 import { Control } from "react-hook-form";
 import { z } from "zod";
+
+import { X } from "lucide-react";
 
 export const builderSchema = z.object({
     data: z.array(z.object({
@@ -48,7 +49,7 @@ export const builderSchema = z.object({
     }))
 });
 
-export function CardLoader(props: { element: string, index: number, control: Control<z.infer<typeof builderSchema>>, data: object }) {
+export function CardLoader(props: { element: string, index: number, control: Control<z.infer<typeof builderSchema>>, data: object, remove: void }) {
     const cards: { [key: string]: FC<any> } = {
         AgeCard,
         SexCard,
@@ -57,16 +58,20 @@ export function CardLoader(props: { element: string, index: number, control: Con
     }
 
     const Card = cards[props.element];
-    return <Card index={props.index} control={props.control} data={props.data} />
+    return <Card index={props.index} control={props.control} data={props.data} remove={props.remove} />
 }
 
-export function AgeCard(props: { index: number, control: Control<z.infer<typeof builderSchema>>, data: object }) {
+export function AgeCard(props: { index: number, control: Control<z.infer<typeof builderSchema>>, data: object, remove: void }) {
     const data = JSON.parse(JSON.stringify(props.data));
 
     return (
         <Card className="w-1/3">
             <CardHeader>
-                <CardTitle>Age</CardTitle>
+                <CardTitle className="flex items-center">
+                    <span className="order-first">Age</span>
+                    <span className="grow"></span>
+                    <X onClick={() => props.remove} className="text-gray-300 hover:text-red-400 select-none cursor-pointer transition-all rounded-full" />
+                </CardTitle>
                 <CardDescription>Define your crowds age or age range</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-2">
@@ -163,11 +168,15 @@ export function AgeCard(props: { index: number, control: Control<z.infer<typeof 
     )
 }
 
-export function SexCard(props: { index: number, control: Control<z.infer<typeof builderSchema>>, data: object }) {
+export function SexCard(props: { index: number, control: Control<z.infer<typeof builderSchema>>, data: object, remove: void }) {
     return (
         <Card className="w-1/3">
             <CardHeader>
-                <CardTitle>Sex</CardTitle>
+                <CardTitle className="flex items-center">
+                    <span className="order-first">Sex</span>
+                    <span className="grow"></span>
+                    <X onClick={() => props.remove} className="text-gray-300 hover:text-red-400 select-none cursor-pointer transition-all rounded-full" />
+                </CardTitle>
                 <CardDescription>Define your crowds' sex</CardDescription>
             </CardHeader>
             <CardContent>
@@ -200,7 +209,7 @@ export function SexCard(props: { index: number, control: Control<z.infer<typeof 
     )
 }
 
-export function GenderCard(props: { index: number, control: Control<z.infer<typeof builderSchema>>, data: object }) {
+export function GenderCard(props: { index: number, control: Control<z.infer<typeof builderSchema>>, data: object, remove: void }) {
     const data = JSON.parse(JSON.stringify(props.data));
 
     const genders = [
@@ -217,7 +226,11 @@ export function GenderCard(props: { index: number, control: Control<z.infer<type
     return (
         <Card className="w-1/3">
             <CardHeader>
-                <CardTitle>Gender</CardTitle>
+                <CardTitle className="flex items-center">
+                    <span className="order-first">Gender</span>
+                    <span className="grow"></span>
+                    <X onClick={() => props.remove} className="text-gray-300 hover:text-red-400 select-none cursor-pointer transition-all rounded-full" />
+                </CardTitle>
                 <CardDescription>Define your crowds' gender</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-2">
@@ -276,13 +289,17 @@ export function GenderCard(props: { index: number, control: Control<z.infer<type
     )
 }
 
-export function EducationCard(props: { index: number, control: Control<z.infer<typeof builderSchema>>, data: object }) {
+export function EducationCard(props: { index: number, control: Control<z.infer<typeof builderSchema>>, data: object, remove: void }) {
     const data = JSON.parse(JSON.stringify(props.data));
 
     return (
         <Card className="w-1/3">
             <CardHeader>
-                <CardTitle>Education</CardTitle>
+                <CardTitle className="flex items-center">
+                    <span className="order-first">Education</span>
+                    <span className="grow"></span>
+                    <X onClick={() => props.remove} className="text-gray-300 hover:text-red-400 select-none cursor-pointer transition-all rounded-full" />
+                </CardTitle>
                 <CardDescription>Define your crowds' education details</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-2">
