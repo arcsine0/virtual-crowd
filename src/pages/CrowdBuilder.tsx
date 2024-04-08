@@ -1,5 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 
+import { collection, getDoc, setDoc }  from "firebase/firestore";
+import { db } from "@/firebase/config";
+
 import {
     Card,
     CardDescription,
@@ -84,12 +87,7 @@ const getCurrentDate = () => {
     })}`;
 }
 
-export default function CreateCrowd() {
-    const [builderData, setBuilderData] = useState([
-        { type: "age", value: "", element: "AgeCard" },
-        { type: "sex", value: "", element: "SexCard" },
-    ]);
-
+export default function CrowdBuilder() {
     const [typeValue, setTypeValue] = useState<string>("");
     const [detailsValue, setDetailsValue] = useState<string>("");
 
