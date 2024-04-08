@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-import { collection, getDoc, setDoc }  from "firebase/firestore";
+import { collection, doc, DocumentData, getDoc, setDoc } from "firebase/firestore";
 import { db } from "@/firebase/config";
 
 import {
@@ -88,6 +88,8 @@ const getCurrentDate = () => {
 }
 
 export default function CrowdBuilder() {
+    const [builderData, setBuilderData] = useState<object>({});
+
     const [typeValue, setTypeValue] = useState<string>("");
     const [detailsValue, setDetailsValue] = useState<string>("");
 
@@ -99,16 +101,7 @@ export default function CrowdBuilder() {
 
     const builderForm = useForm<z.infer<typeof builderSchema>>({
         resolver: zodResolver(builderSchema),
-        defaultValues: {
-            data: [
-                {
-                    type: "age", value: {
-                        groupValue: [""],
-                    }, element: "AgeCard"
-                },
-                // { type: "sex", value: {}, element: "SexCard" },
-            ]
-        }
+        defaultValues: builderData,
     });
 
     const { fields, append, remove } = useFieldArray({
@@ -151,7 +144,7 @@ export default function CrowdBuilder() {
     const handleRemoveCard = (index: number) => {
         // remove(index);
         // console.log(index)
-        
+
     }
 
     const onSubmit = (data: z.infer<typeof builderSchema>) => {
@@ -160,7 +153,7 @@ export default function CrowdBuilder() {
         // temporary prompt builder
         const prompts = data.data.map((field) => {
             let fieldPrompt = `${field.type?.toUpperCase()}: `;
-            switch(field.type) {
+            switch (field.type) {
                 case "age":
                     fieldPrompt += `${field.value.type === "Age" ? field.value.mainValue : (`${field.value.rangeFromValue} to ${field.value.rangeToValue}`)}`;
                     break;
@@ -188,6 +181,28 @@ export default function CrowdBuilder() {
         });
     }
 
+    useEffect(() => {
+        const builderRef = doc(db, "Accounts", "ytNVZtmae9e7a8cHzaob", "Crowds", "Ok1cpQoCS9tZ41wvYwIB ");
+        getDoc(builderRef).then((snap) => {
+            const data: DocumentData | undefined = snap.data();
+            if (data?.data === undefined) {
+                console.log("data does not exist");
+                setBuilderData({
+                    data: [
+                        {
+                            type: "age", value: {
+                                groupValue: [""],
+                            }, element: "AgeCard"
+                        },
+                    ]
+                })
+            } else {
+                console.log("data found");
+                setBuilderData(JSON.parse(data?.data));
+            }
+        });
+    }, []);
+
     return (
         <div className="w-full h-full flex flex-col gap-2">
             <h1 className="order-first shrink text-3xl font-bold">Crowds Builder</h1>
@@ -201,13 +216,13 @@ export default function CrowdBuilder() {
                 <Form {...builderForm}>
                     <form onSubmit={builderForm.handleSubmit(onSubmit)} className="flex flex-col gap-2">
                         {fields.map((field, index) => (
-                            <CardLoader 
-                                key={field.id} 
-                                element={field.element} 
-                                index={index} 
-                                control={builderForm.control} 
-                                data={builderForm.getValues("data")[index].value} 
-                                remove={handleRemoveCard(index)} 
+                            <CardLoader
+                                key={field.id}
+                                element={field.element}
+                                index={index}
+                                control={builderForm.control}
+                                data={builderForm.getValues("data")[index].value}
+                                remove={handleRemoveCard(index)}
                             />
                         ))}
                         <Button className="hidden" ref={submitRef} type="submit"></Button>
