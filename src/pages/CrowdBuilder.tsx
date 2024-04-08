@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
+import { useParams } from "react-router-dom";
 
-import { collection, getDoc, setDoc }  from "firebase/firestore";
+import { collection, doc, DocumentData, getDoc, setDoc } from "firebase/firestore";
 import { db } from "@/firebase/config";
 
 import {
@@ -95,6 +96,8 @@ export default function CrowdBuilder() {
 
     const submitRef = useRef<HTMLButtonElement>(null);
 
+    const { id } = useParams();
+
     const { toast } = useToast();
 
     const builderForm = useForm<z.infer<typeof builderSchema>>({
@@ -106,12 +109,11 @@ export default function CrowdBuilder() {
                         groupValue: [""],
                     }, element: "AgeCard"
                 },
-                // { type: "sex", value: {}, element: "SexCard" },
             ]
-        }
+        },
     });
 
-    const { fields, append, remove } = useFieldArray({
+    const { fields, append, remove, replace } = useFieldArray({
         control: builderForm.control,
         name: "data",
     });
@@ -145,13 +147,12 @@ export default function CrowdBuilder() {
 
     const handleDataSaving = () => {
         submitRef.current?.click();
-        setSavedDate(getCurrentDate());
     }
 
     const handleRemoveCard = (index: number) => {
         // remove(index);
         // console.log(index)
-        
+
     }
 
     const onSubmit = (data: z.infer<typeof builderSchema>) => {
@@ -160,7 +161,7 @@ export default function CrowdBuilder() {
         // temporary prompt builder
         const prompts = data.data.map((field) => {
             let fieldPrompt = `${field.type?.toUpperCase()}: `;
-            switch(field.type) {
+            switch (field.type) {
                 case "age":
                     fieldPrompt += `${field.value.type === "Age" ? field.value.mainValue : (`${field.value.rangeFromValue} to ${field.value.rangeToValue}`)}`;
                     break;
@@ -182,11 +183,37 @@ export default function CrowdBuilder() {
         const prompt = `This is your details as an individuals:\n ${prompts.join("\n")}\n`;
         console.log(prompt);
 
-        toast({
-            title: "Data saved successfully",
-            duration: 1000,
-        });
+        const dataFormat = {
+            data: data.data,
+        }
+
+        setDoc(doc(db, "Accounts", "ytNVZtmae9e7a8cHzaob", "Crowds", "Ok1cpQoCS9tZ41wvYwIB"), {
+            data: JSON.stringify(dataFormat),
+            prompt: prompt,
+        }).then(() => {
+            toast({
+                title: "Data saved successfully",
+                duration: 1000,
+            });
+            setSavedDate(getCurrentDate());
+        })
     }
+
+    useEffect(() => {
+        if (id) {
+            const builderRef = doc(db, "Accounts", "ytNVZtmae9e7a8cHzaob", "Crowds", id);
+            getDoc(builderRef).then((snap) => {
+                if (snap.data()) {
+                    const data = snap.get("data");
+                    if (data !== "") {
+                        const parsedData = JSON.parse(data);
+                        replace(parsedData.data);
+                    }
+                }
+
+            });
+        }
+    }, []);
 
     return (
         <div className="w-full h-full flex flex-col gap-2">
@@ -201,13 +228,13 @@ export default function CrowdBuilder() {
                 <Form {...builderForm}>
                     <form onSubmit={builderForm.handleSubmit(onSubmit)} className="flex flex-col gap-2">
                         {fields.map((field, index) => (
-                            <CardLoader 
-                                key={field.id} 
-                                element={field.element} 
-                                index={index} 
-                                control={builderForm.control} 
-                                data={builderForm.getValues("data")[index].value} 
-                                remove={handleRemoveCard(index)} 
+                            <CardLoader
+                                key={field.id}
+                                element={field.element}
+                                index={index}
+                                control={builderForm.control}
+                                data={builderForm.getValues("data")[index].value}
+                                remove={handleRemoveCard(index)}
                             />
                         ))}
                         <Button className="hidden" ref={submitRef} type="submit"></Button>

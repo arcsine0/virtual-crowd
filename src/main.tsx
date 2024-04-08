@@ -1,4 +1,3 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
@@ -6,7 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider.tsx";
 
 import Layout from "@/components/Layout";
 import Dashboard from "@/pages/Dashboard.tsx";
-import AllCrowds from "./pages/AllCrowds";
+import AllCrowds from "@/pages/AllCrowds";
 import CrowdBuilder from "@/pages/CrowdBuilder";
 
 import "./index.css";
@@ -24,7 +23,7 @@ const router = createBrowserRouter([{
 			element: <AllCrowds />
 		},
 		{
-			path: "/crowds/create",
+			path: "/crowds/build/:id",
 			element: <CrowdBuilder />
 		}
 	]
