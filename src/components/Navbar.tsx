@@ -44,7 +44,7 @@ export default function Navbar() {
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link to={"/crowds/create"}>
+                                        <Link to={"/crowds/build"}>
                                             <ListItem title="Create Crowds" desc="Setup and configure your crowds here!" />
                                         </Link>
                                     </li>

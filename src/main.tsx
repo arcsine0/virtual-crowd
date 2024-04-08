@@ -23,6 +23,10 @@ const router = createBrowserRouter([{
 			element: <AllCrowds />
 		},
 		{
+			path: "/crowds/build",
+			element: <CrowdBuilder />
+		},
+		{
 			path: "/crowds/build/:id",
 			element: <CrowdBuilder />
 		}
