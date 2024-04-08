@@ -1,5 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 
+import { collection, getDoc, setDoc }  from "firebase/firestore";
+import { db } from "@/firebase/config";
+
 import {
     Card,
     CardDescription,
