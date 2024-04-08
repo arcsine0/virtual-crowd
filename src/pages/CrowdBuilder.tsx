@@ -84,12 +84,7 @@ const getCurrentDate = () => {
     })}`;
 }
 
-export default function CreateCrowd() {
-    const [builderData, setBuilderData] = useState([
-        { type: "age", value: "", element: "AgeCard" },
-        { type: "sex", value: "", element: "SexCard" },
-    ]);
-
+export default function CrowdBuilder() {
     const [typeValue, setTypeValue] = useState<string>("");
     const [detailsValue, setDetailsValue] = useState<string>("");
 

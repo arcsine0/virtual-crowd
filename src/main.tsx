@@ -7,7 +7,7 @@ import { ThemeProvider } from "@/components/theme-provider.tsx";
 import Layout from "@/components/Layout";
 import Dashboard from "@/pages/Dashboard.tsx";
 import AllCrowds from "./pages/AllCrowds";
-import CreateCrowd from "@/pages/CreateCrowd.tsx";
+import CrowdBuilder from "@/pages/CrowdBuilder";
 
 import "./index.css";
 
@@ -25,7 +25,7 @@ const router = createBrowserRouter([{
 		},
 		{
 			path: "/crowds/create",
-			element: <CreateCrowd />
+			element: <CrowdBuilder />
 		}
 	]
 }]);
