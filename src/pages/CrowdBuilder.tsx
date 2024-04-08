@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useParams } from "react-router-dom";
 
 import { collection, doc, DocumentData, getDoc, setDoc } from "firebase/firestore";
 import { db } from "@/firebase/config";
@@ -95,6 +96,8 @@ export default function CrowdBuilder() {
 
     const submitRef = useRef<HTMLButtonElement>(null);
 
+    const { id } = useParams();
+
     const { toast } = useToast();
 
     const builderForm = useForm<z.infer<typeof builderSchema>>({
@@ -144,7 +147,6 @@ export default function CrowdBuilder() {
 
     const handleDataSaving = () => {
         submitRef.current?.click();
-        setSavedDate(getCurrentDate());
     }
 
     const handleRemoveCard = (index: number) => {
@@ -193,21 +195,24 @@ export default function CrowdBuilder() {
                 title: "Data saved successfully",
                 duration: 1000,
             });
+            setSavedDate(getCurrentDate());
         })
     }
 
     useEffect(() => {
-        const builderRef = doc(db, "Accounts", "ytNVZtmae9e7a8cHzaob", "Crowds", "Ok1cpQoCS9tZ41wvYwIB");
-        getDoc(builderRef).then((snap) => {
-            if (snap.data()) {
-                const data = snap.get("data");
-                if (data !== "") {
-                    const parsedData = JSON.parse(data);
-                    replace(parsedData.data);
+        if (id) {
+            const builderRef = doc(db, "Accounts", "ytNVZtmae9e7a8cHzaob", "Crowds", id);
+            getDoc(builderRef).then((snap) => {
+                if (snap.data()) {
+                    const data = snap.get("data");
+                    if (data !== "") {
+                        const parsedData = JSON.parse(data);
+                        replace(parsedData.data);
+                    }
                 }
-            }
 
-        });
+            });
+        }
     }, []);
 
     return (
