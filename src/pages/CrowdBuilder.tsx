@@ -88,8 +88,6 @@ const getCurrentDate = () => {
 }
 
 export default function CrowdBuilder() {
-    const [builderData, setBuilderData] = useState<object>({});
-
     const [typeValue, setTypeValue] = useState<string>("");
     const [detailsValue, setDetailsValue] = useState<string>("");
 
@@ -101,10 +99,18 @@ export default function CrowdBuilder() {
 
     const builderForm = useForm<z.infer<typeof builderSchema>>({
         resolver: zodResolver(builderSchema),
-        defaultValues: builderData,
+        defaultValues: {
+            data: [
+                {
+                    type: "age", value: {
+                        groupValue: [""],
+                    }, element: "AgeCard"
+                },
+            ]
+        },
     });
 
-    const { fields, append, remove } = useFieldArray({
+    const { fields, append, remove, replace } = useFieldArray({
         control: builderForm.control,
         name: "data",
     });
@@ -175,31 +181,32 @@ export default function CrowdBuilder() {
         const prompt = `This is your details as an individuals:\n ${prompts.join("\n")}\n`;
         console.log(prompt);
 
-        toast({
-            title: "Data saved successfully",
-            duration: 1000,
-        });
+        const dataFormat = {
+            data: data.data,
+        }
+
+        setDoc(doc(db, "Accounts", "ytNVZtmae9e7a8cHzaob", "Crowds", "Ok1cpQoCS9tZ41wvYwIB"), {
+            data: JSON.stringify(dataFormat),
+            prompt: prompt,
+        }).then(() => {
+            toast({
+                title: "Data saved successfully",
+                duration: 1000,
+            });
+        })
     }
 
     useEffect(() => {
-        const builderRef = doc(db, "Accounts", "ytNVZtmae9e7a8cHzaob", "Crowds", "Ok1cpQoCS9tZ41wvYwIB ");
+        const builderRef = doc(db, "Accounts", "ytNVZtmae9e7a8cHzaob", "Crowds", "Ok1cpQoCS9tZ41wvYwIB");
         getDoc(builderRef).then((snap) => {
-            const data: DocumentData | undefined = snap.data();
-            if (data?.data === undefined) {
-                console.log("data does not exist");
-                setBuilderData({
-                    data: [
-                        {
-                            type: "age", value: {
-                                groupValue: [""],
-                            }, element: "AgeCard"
-                        },
-                    ]
-                })
-            } else {
-                console.log("data found");
-                setBuilderData(JSON.parse(data?.data));
+            if (snap.data()) {
+                const data = snap.get("data");
+                if (data !== "") {
+                    const parsedData = JSON.parse(data);
+                    replace(parsedData.data);
+                }
             }
+
         });
     }, []);
 
